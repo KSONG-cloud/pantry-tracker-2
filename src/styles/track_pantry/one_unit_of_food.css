@@ -98,6 +98,6 @@
 
 .food-addbutton:active,
 .food-minusbutton:active {
-    background: #f3f3f3;
+    box-shadow: 0 0;
     transform: translateY(1px);
 }

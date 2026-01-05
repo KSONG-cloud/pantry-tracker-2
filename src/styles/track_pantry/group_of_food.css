@@ -1,0 +1,59 @@
+.foodgroup-container {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 15px 5px 45px;
+}
+
+.foodgroup-header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    padding: 5px;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.foodgroup-icon {
+    width: 24px;
+    height: 24px;
+    background-color: #d9d9d9;
+    border-radius: 4px;
+}
+
+.foodgroup-name {
+    font-family: Inter;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+}
+
+.foodgroup-add-button {
+    padding: 5px 10px;
+    background-color: #b7cfb1;
+    color: #fefffe;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+
+    font-family: Inter;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+}
+
+.foodgroup-add-button:hover {
+    box-shadow: 0 2px #7b8b77;
+    transform: translateY(-1px);
+}
+
+.foodgroup-add-button:active {
+    box-shadow: 0 0;
+    transform: translateY(1px);
+}
+
+.foodgroup-line {
+    flex-grow: 1;
+    height: 1px;
+    background-color: #d9d9d9;
+}

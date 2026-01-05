@@ -1,5 +1,5 @@
 import { Header } from './components/header';
-import { FoodUnit } from './components/track_pantry/one_unit_of_food';
+import { FoodGroup } from './components/track_pantry/group_of_food';
 
 // Types
 import type { FoodUnitWithNameType } from './types/food';
@@ -16,14 +16,32 @@ function App() {
         food_name: food_names[unit['food_id']],
     }));
 
+    const groupedFoods: Record<number, FoodUnitWithNameType[]> =
+        foodList_withName.reduce<Record<number, FoodUnitWithNameType[]>>(
+            (acc, food) => {
+                if (!acc[food.group_id]) {
+                    acc[food.group_id] = [];
+                }
+                acc[food.group_id].push(food);
+                return acc;
+            },
+            {}
+        );
+
     return (
         <>
             <Header date={today}></Header>
 
-            <FoodUnit food={food_withName}></FoodUnit>
-            {foodList_withName.map((food) => (
-                <FoodUnit food={food} />
-            ))}
+            {Object.keys(food_groups).map((groupId) => {
+                const id = Number(groupId);
+                return (
+                    <FoodGroup
+                        key={food_groups[id]}
+                        name={food_groups[id]}
+                        list={groupedFoods[id] || []}
+                    />
+                );
+            })}
         </>
     );
 }
