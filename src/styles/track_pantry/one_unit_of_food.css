@@ -12,7 +12,7 @@
 
     /* Style */
     border-radius: clamp(12px, 4vw, 30px);
-    background: #FEFFFE;
+    background: #fefffe;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -21,8 +21,9 @@
     flex-direction: column;
 }
 
-
-.food-name, .food-dateinfo, .food-quantity {
+.food-name,
+.food-dateinfo,
+.food-quantity {
     font-family: Inter;
 }
 
@@ -41,7 +42,7 @@
 
 .food-dateinfo {
     /* Style */
-    color: #BCBCBC;
+    color: #bcbcbc;
     font-size: 12px;
 }
 
@@ -56,7 +57,6 @@
     height: clamp(60px, 12vh, 85px);
     padding: clamp(2px, 0.6vw, 4px) clamp(1px, 0.4vw, 2px);
 
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -64,10 +64,11 @@
 
     /* Style */
     border-radius: 14px;
-    background: #F3F3F3;
+    background: #f3f3f3;
 }
 
-.food-addbutton, .food-minusbutton {
+.food-addbutton,
+.food-minusbutton {
     /* Layout */
     width: clamp(16px, 6vw, 20px);
     height: clamp(16px, 6vw, 20px);
@@ -79,10 +80,9 @@
     border-radius: 100%;
     padding: 0;
 
-
     /* Style */
     border: none;
-    background-color:#FEFFFE;
+    background-color: #fefffe;
 }
 
 .food-addbutton svg {
@@ -90,13 +90,14 @@
     width: 100%;
 }
 
-.food-addbutton:hover, .food-minusbutton:hover {
+.food-addbutton:hover,
+.food-minusbutton:hover {
     box-shadow: 0 2px #c8c8c8;
     transform: translateY(-1px);
 }
 
-
-.food-addbutton:active, .food-minusbutton:active {
-    background: #F3F3F3;
+.food-addbutton:active,
+.food-minusbutton:active {
+    background: #f3f3f3;
     transform: translateY(1px);
 }
