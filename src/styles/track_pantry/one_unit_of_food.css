@@ -1,0 +1,102 @@
+.foodUnit {
+    /* Layout */
+    gap: 1rem;
+    width: fit-content;
+    max-width: clamp(150px, 40vw, 200px);
+    height: clamp(80px, 15vh, 110px);
+    padding: 0 clamp(12px, 2vw, 20px);
+    justify-content: space-between;
+    align-items: center;
+
+    display: flex;
+
+    /* Style */
+    border-radius: clamp(12px, 4vw, 30px);
+    background: #FEFFFE;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.food-info {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.food-name, .food-dateinfo, .food-quantity {
+    font-family: Inter;
+}
+
+.food-name {
+    /* Style */
+    color: #000;
+    font-size: 20px;
+    font-weight: 500;
+
+    /* Layout */
+    max-width: clamp(80px, 10vw, 120px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.food-dateinfo {
+    /* Style */
+    color: #BCBCBC;
+    font-size: 12px;
+}
+
+.food-quantity {
+    color: #000;
+    font-size: 80%;
+}
+
+.food-unittoggle {
+    /* Layout */
+    width: clamp(24px, 4vw, 30px);
+    height: clamp(60px, 12vh, 85px);
+    padding: clamp(2px, 0.6vw, 4px) clamp(1px, 0.4vw, 2px);
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    /* Style */
+    border-radius: 14px;
+    background: #F3F3F3;
+}
+
+.food-addbutton, .food-minusbutton {
+    /* Layout */
+    width: clamp(16px, 6vw, 20px);
+    height: clamp(16px, 6vw, 20px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 100%;
+    padding: 0;
+
+
+    /* Style */
+    border: none;
+    background-color:#FEFFFE;
+}
+
+.food-addbutton svg {
+    height: 100%;
+    width: 100%;
+}
+
+.food-addbutton:hover, .food-minusbutton:hover {
+    box-shadow: 0 2px #c8c8c8;
+    transform: translateY(-1px);
+}
+
+
+.food-addbutton:active, .food-minusbutton:active {
+    background: #F3F3F3;
+    transform: translateY(1px);
+}
