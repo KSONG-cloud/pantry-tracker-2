@@ -1,3 +1,7 @@
+// React
+import { useEffect } from 'react';
+
+// Components
 import { Header } from './components/header';
 import { FoodGroup } from './components/track_pantry/group_of_food';
 
@@ -8,7 +12,7 @@ import type { FoodUnitWithNameType } from './types/food';
 import { food_groups, food_names, foodList } from './info';
 
 function App() {
-    const today = new Date();
+    const today: Date = new Date();
 
     // Food names Processing - In the future might use Context to process it in One_unit_of_food
     const foodList_withName: FoodUnitWithNameType[] = foodList.map((unit) => ({
@@ -26,7 +30,32 @@ function App() {
                 return acc;
             },
             {}
-        );
+    );
+        
+    // const expressTest = fetch('http://localhost:3001/')
+    // const data = expressTest;
+    // console.log(data);
+
+    useEffect(() => {
+        async function fetchString() {
+            try {
+                const response: globalThis.Response = await fetch('http://localhost:3001/');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+
+                const data: string = await response.text();
+                console.log('Response from server:', data);
+            } catch (err) {
+                console.error('Fetch error:', err);
+            }
+            
+        }
+
+        fetchString();
+    }, []);
+    
 
     return (
         <>
@@ -42,6 +71,8 @@ function App() {
                     />
                 );
             })}
+
+            
         </>
     );
 }

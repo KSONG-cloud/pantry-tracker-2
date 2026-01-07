@@ -1,5 +1,5 @@
 // Components
-import { FoodUnit } from '../../components/track_pantry/one_unit_of_food';
+import { FoodUnit } from './one_unit_of_food';
 
 // Styles
 import '@/styles/track_pantry/list_of_food.css';
