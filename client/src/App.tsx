@@ -30,8 +30,8 @@ function App() {
                 return acc;
             },
             {}
-    );
-        
+        );
+
     // const expressTest = fetch('http://localhost:3001/')
     // const data = expressTest;
     // console.log(data);
@@ -39,7 +39,9 @@ function App() {
     useEffect(() => {
         async function fetchString() {
             try {
-                const response: globalThis.Response = await fetch('http://localhost:3001/');
+                const response: globalThis.Response = await fetch(
+                    'http://localhost:3001/'
+                );
 
                 if (!response.ok) {
                     throw new Error(`HTTP error ${response.status}`);
@@ -50,12 +52,10 @@ function App() {
             } catch (err) {
                 console.error('Fetch error:', err);
             }
-            
         }
 
         fetchString();
     }, []);
-    
 
     return (
         <>
@@ -71,8 +71,6 @@ function App() {
                     />
                 );
             })}
-
-            
         </>
     );
 }
