@@ -1,0 +1,30 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* blacken / semi-transparent */
+    backdrop-filter: blur(4px); /* blur */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    z-index: 1001;
+}
+
+button:hover {
+    box-shadow: 0 2px #c8c8c8;
+    transform: translateY(-1px);
+}
+
+button:active {
+    box-shadow: 0 0;
+    transform: translateY(1px);
+}

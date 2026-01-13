@@ -8,16 +8,22 @@ import { useState } from 'react';
 import '@/styles/track_pantry/group_of_food.css';
 
 // Types
-import type { FoodUnitWithNameType } from '../../types/food';
+import type { FoodUnitType } from '../../types/food';
 
 interface FoodGroupProps {
     name: string;
-    list: FoodUnitWithNameType[];
-}
+    list: FoodUnitType[];
+    
+    changeFoodItem: (editedFood: FoodUnitType) => void;
+    onFoodClick: (foodItem: FoodUnitType) => void;
 
-const FoodGroup = ({ name, list }: FoodGroupProps) => {
-    const [foodList, setFoodList] = useState<FoodUnitWithNameType[]>(list);
-
+const FoodGroup = ({
+    name,
+    list,
+    
+    changeFoodItem,
+    onFoodClick,
+}: FoodGroupProps) => {
     const handleAddItem = () => {
         // Logic to add a new food item to the group
         // This could involve opening a modal or redirecting to an add item page
@@ -37,7 +43,11 @@ const FoodGroup = ({ name, list }: FoodGroupProps) => {
                 </button>
                 <div className="foodgroup-line"></div>
             </div>
-            <FoodList foodList={foodList} />
+            <FoodList
+                foodList={list}
+                onFoodClick={onFoodClick}
+                changeFoodItem={changeFoodItem}
+            />
         </div>
     );
 };

@@ -5,17 +5,24 @@ import { FoodUnit } from './one_unit_of_food';
 import '@/styles/track_pantry/list_of_food.css';
 
 // Types
-import type { FoodUnitWithNameType } from '../../types/food';
+import type { FoodUnitType } from '../../types/food';
 
 interface FoodListProps {
-    foodList: FoodUnitWithNameType[];
+    foodList: FoodUnitType[];
+    onFoodClick: (foodItem: FoodUnitType) => void;
+    changeFoodItem: (editedFood: FoodUnitType) => void;
 }
 
-const FoodList = ({ foodList }: FoodListProps) => {
+const FoodList = ({ foodList, onFoodClick, changeFoodItem }: FoodListProps) => {
     return (
         <div className="food-list">
             {foodList.map((food) => (
-                <FoodUnit key={food.id} food={food} />
+                <FoodUnit
+                    key={food.id}
+                    food={food}
+                    onFoodClick={onFoodClick}
+                    changeFoodItem={changeFoodItem}
+                />
             ))}
         </div>
     );
