@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FoodUnitType, FoodGroupType } from '../../types/food';
 
 // Info
-import { food, food_names, foodList } from '../../info';
+const USERID = 1;
 
 function TrackPantry() {
     // Food Items and Groups State
@@ -28,7 +28,7 @@ function TrackPantry() {
 
     // Add Item Modal State
     const [addItemModalOpen, setAddItemModalOpen] = useState<boolean>(false);
-
+    const [foodGroupId, setFoodGroupId] = useState<number>(-1);
 
     // Fetching Food Items and Groups from Database
     const fetchFoodItems = async () => {
@@ -95,7 +95,7 @@ function TrackPantry() {
 
     // Delete Food Item and Group Handlers
     const deleteFoodItem = async (foodId: number) => {
-        setFoodItems(prev => prev.filter(item => item.id !== foodId));
+        setFoodItems((prev) => prev.filter((item) => item.id !== foodId));
     };
 
     const deleteFoodGroup = async (foodGroupId: number) => {};
@@ -118,14 +118,15 @@ function TrackPantry() {
         // Send PUT request to backend to update food item
     };
 
-
     // Add Item Modal Handlers
-    const openAddItemModal = () => {
+    const openAddItemModal = (foodGroupId: number = -1) => {
+        // THIS MIGHT NOT UPDATE FAST ENOUGH !!!!
+        setFoodGroupId(foodGroupId);
         setAddItemModalOpen(true);
-    }
+    };
     const closeAddItemModal = () => {
         setAddItemModalOpen(false);
-    }
+    };
 
     // Query for food data from pantry table for user_id (Data is grouped by foodgroup_id in backend)
     // Removed = false
@@ -159,6 +160,7 @@ function TrackPantry() {
                 return (
                     <FoodGroup
                         key={id}
+                        id={id}
                         name={foodGroups[id]}
                         list={groupFoodItems[id] || []}
                         changeFoodItem={changeFoodItem}
@@ -181,14 +183,17 @@ function TrackPantry() {
             )}
 
             {/* Add Item Modal */}
-            { addItemModalOpen && 
+            {addItemModalOpen && (
                 <AddItemModal
                     tempId={tempIdCounter.current--}
+                    foodGroups={foodGroups}
+                    currentGroupId={foodGroupId}
                     onClose={closeAddItemModal}
                     onAddItem={addFoodItem}
+                    userId={USERID}
+                    isAdding={addItemModalOpen}
                 />
-            }
-            
+            )}
         </>
     );
 }

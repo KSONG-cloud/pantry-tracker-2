@@ -2,7 +2,6 @@
 import { FoodList } from './list_of_food';
 
 // React
-import { useState } from 'react';
 
 // Styles
 import '@/styles/track_pantry/group_of_food.css';
@@ -11,18 +10,23 @@ import '@/styles/track_pantry/group_of_food.css';
 import type { FoodUnitType } from '../../types/food';
 
 interface FoodGroupProps {
+    id: number;
     name: string;
     list: FoodUnitType[];
-    
     changeFoodItem: (editedFood: FoodUnitType) => void;
     onFoodClick: (foodItem: FoodUnitType) => void;
+    addFoodItem: (foodItem: FoodUnitType) => void;
+    openAddItemModal: (groupId: number) => void;
+}
 
 const FoodGroup = ({
+    id,
     name,
     list,
-    
     changeFoodItem,
     onFoodClick,
+    addFoodItem,
+    openAddItemModal,
 }: FoodGroupProps) => {
     const handleAddItem = () => {
         // Logic to add a new food item to the group
@@ -37,7 +41,7 @@ const FoodGroup = ({
                 <span className="foodgroup-name">{name}</span>
                 <button
                     className="foodgroup-add-button"
-                    onClick={handleAddItem}
+                    onClick={() => openAddItemModal(id)}
                 >
                     ADD ITEM
                 </button>
