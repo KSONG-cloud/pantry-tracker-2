@@ -5,7 +5,7 @@ import { Modal, parseValue } from './modal';
 import { useState } from 'react';
 
 // Styles
-import '@/styles/track_pantry/food_item_modal.css';
+import '@/styles/track_pantry/modal.css';
 
 // Types
 import type { FoodUnitType, FoodGroupType } from '../../types/food';
