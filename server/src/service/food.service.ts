@@ -1,4 +1,3 @@
-// import { getFoodGroupsByUser } from '../controller/controller.js';
 import * as foodRepository from '../database/food.repository.js';
 import type { FoodUnitType, FoodGroupType } from '../types/types.js';
 
@@ -13,6 +12,6 @@ export const getPantryByUser = async (
 
 export const getFoodGroupsByUser = async (
     userId: number
-): Promise<FoodGroupType | object> => {
+): Promise<FoodGroupType> => {
     return foodRepository.getFoodGroupsByUser(userId);
 };
