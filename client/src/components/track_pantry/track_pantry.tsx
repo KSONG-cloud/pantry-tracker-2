@@ -33,7 +33,7 @@ function TrackPantry() {
     // Fetching Food Items and Groups from Database
     const fetchFoodItems = async () => {
         // Fetch food items from backend
-        const res = await fetch('http://localhost:3001/food/1');
+        const res = await fetch(`http://localhost:3001/users/${USERID}/pantry`);
         const resJSON = await res.json();
         setFoodItems(resJSON);
         setLoading(false);
@@ -41,10 +41,9 @@ function TrackPantry() {
 
     const fetchFoodGroups = async () => {
         // Fetch food groups from backend
-        const res = await fetch('http://localhost:3001/food-groups');
+        const res = await fetch(`http://localhost:3001/users/${USERID}/food-groups`);
         const resJSON = await res.json();
-        const food_groups: FoodGroupType = resJSON[0]['foodgroups'];
-        setFoodGroups(food_groups);
+        setFoodGroups(resJSON);
     };
 
     // add Food Item and Group Handlers

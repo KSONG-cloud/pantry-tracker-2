@@ -1,10 +1,9 @@
 type food = {
     id: number;
     name: string;
-}
+};
 
-
-type newFoodUnitType = {
+type FoodUnitType = {
     id: number;
     food_id: number;
     group_id: number;
@@ -16,5 +15,6 @@ type newFoodUnitType = {
     food_name: string;
 };
 
+type FoodGroupType = Record<number, string>;
 
-export type { food, newFoodUnitType };
+export type { food, FoodUnitType, FoodGroupType };
