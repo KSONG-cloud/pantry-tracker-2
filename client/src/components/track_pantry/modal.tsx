@@ -49,7 +49,6 @@ const Modal = ({
     onChange,
     isEditing,
     isAdding,
-    tempId,
 }: ModalProps) => {
     // Fields
     type Field<T> = {

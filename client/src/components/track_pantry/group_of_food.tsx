@@ -15,7 +15,6 @@ interface FoodGroupProps {
     list: FoodUnitType[];
     changeFoodItem: (editedFood: FoodUnitType) => void;
     onFoodClick: (foodItem: FoodUnitType) => void;
-    addFoodItem: (foodItem: FoodUnitType) => void;
     openAddItemModal: (groupId: number) => void;
 }
 
@@ -25,15 +24,8 @@ const FoodGroup = ({
     list,
     changeFoodItem,
     onFoodClick,
-    addFoodItem,
     openAddItemModal,
 }: FoodGroupProps) => {
-    const handleAddItem = () => {
-        // Logic to add a new food item to the group
-        // This could involve opening a modal or redirecting to an add item page
-        console.log(`Add item to group ${name}`);
-    };
-
     return (
         <div className="foodgroup-container">
             <div className="foodgroup-header">

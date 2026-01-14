@@ -165,7 +165,6 @@ function TrackPantry() {
                         list={groupFoodItems[id] || []}
                         changeFoodItem={changeFoodItem}
                         onFoodClick={openItemModal}
-                        addFoodItem={addFoodItem}
                         openAddItemModal={openAddItemModal}
                     />
                 );
