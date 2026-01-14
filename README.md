@@ -48,7 +48,7 @@ Create a `.env` file in `server/` (or set environment variables) with database s
 DB_USER=your_db_user
 DB_PASS=your_db_password
 DB_HOST=your_db_host
-DB_NAME=pantry_db
+DB_NAME=your_db_name
 DB_PORT=5432
 PORT=3001
 ```
