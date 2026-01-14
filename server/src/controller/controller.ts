@@ -1,6 +1,18 @@
 import type { Request, Response } from 'express';
 import * as foodService from '../service/food.service.js';
 
+const handleError = (error: unknown, res: Response) => {
+    console.error('Controller error:', error);
+
+    if (error instanceof Error) {
+        // Optional: you can inspect error.name or extend to custom error types
+        res.status(400).json({ message: error.message });
+    } else {
+        // Fallback for unknown error types
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 export const getPantryByUser = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.id);
@@ -13,12 +25,7 @@ export const getPantryByUser = async (req: Request, res: Response) => {
         const pantryItems = await foodService.getPantryByUser(userId);
         res.status(200).json(pantryItems);
     } catch (error) {
-        console.error('Controller error:', error);
-        if (error instanceof Error) {
-            res.status(404).json({ message: error });
-        } else {
-            res.status(500).json({ message: 'Internal server error' });
-        }
+        handleError(error, res);
     }
 };
 
@@ -34,11 +41,6 @@ export const getFoodGroupsByUser = async (req: Request, res: Response) => {
         const foodGroups = await foodService.getFoodGroupsByUser(userId);
         res.status(200).json(foodGroups);
     } catch (error) {
-        console.error('Controller error:', error);
-        if (error instanceof Error) {
-            res.status(404).json({ message: error });
-        } else {
-            res.status(500).json({ message: 'Internal server error' });
-        }
+        handleError(error, res);
     }
 };
