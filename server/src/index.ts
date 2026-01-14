@@ -1,6 +1,4 @@
 // Types
-import type { QueryResult } from '../node_modules/@types/pg/index.js';
-import type { food, FoodUnitType } from './types/types.js';
 
 // Environment variables
 import dotenv from 'dotenv';
