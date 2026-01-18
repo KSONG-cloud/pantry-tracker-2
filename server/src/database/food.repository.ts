@@ -70,6 +70,54 @@ export const getPantryByUser = async (
     return result.rows;
 };
 
+export const addFoodItemPantry = async (foodItem: FoodUnitType) => {
+    const result: QueryResult<FoodUnitType> = await pool.query(
+        `INSERT INTO pantry (
+            food_id,
+            expiry_date,
+            bestbefore_date,
+            added_date,
+            quantity,
+            units,
+            foodgroup_id,
+            user_id
+            ) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING *`,
+        [
+            foodItem.food_id,
+            foodItem.expiry_date,
+            foodItem.bestbefore_date,
+            foodItem.added_date,
+            foodItem.quantity,
+            foodItem.units,
+            foodItem.group_id,
+            foodItem.user_id,
+        ]
+    );
+
+    if (result.rowCount === null) {
+        throw new Error('Unexpected null rowCount');
+    }
+
+    if (result.rowCount <= 0) {
+        throw new Error('Insert food item into pantry failed!');
+    }
+
+    if (result.rows.length === 0) {
+        throw new Error('No rows returned');
+    }
+
+    const row = result.rows[0];
+
+    if (!row) {
+        throw new Error('Insert food item into pantry failed!');
+    }
+
+    return row;
+};
+
+// Account/Food Group
 type FoodGroupsRow = {
     foodgroups: FoodGroupType;
 };

@@ -40,6 +40,23 @@ export const getPantryByUser = async (req: Request, res: Response) => {
     }
 };
 
+export const addFoodItemPantry = async (req: Request, res: Response) => {
+    try {
+        const userId = Number(req.params.userId);
+        const item = req.body;
+
+        if (Number.isNaN(userId)) {
+            res.status(400).json({ message: 'Invalid user id' });
+            return;
+        }
+
+        const newFoodItem = await foodService.addFoodItemPantry(item);
+        res.status(201).json(newFoodItem);
+    } catch (error) {
+        handleError(error, res);
+    }
+};
+
 export const getFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.id);
