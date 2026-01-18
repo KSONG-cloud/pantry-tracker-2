@@ -26,7 +26,7 @@ export const getFoodMap = async (req: Request, res: Response) => {
 // Pantry
 export const getPantryByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.id);
+        const userId = Number(req.params.userId);
 
         if (Number.isNaN(userId)) {
             res.status(400).json({ message: 'Invalid user id' });

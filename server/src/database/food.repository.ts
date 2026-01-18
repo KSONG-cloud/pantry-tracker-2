@@ -52,6 +52,10 @@ export const addFood = async (name: string): Promise<FoodMapType> => {
 
     return row;
 };
+
+// Pantry
+// (PROBABLY NOT FROM GOOGLE) IS THIS GETTING TWO COLUMNS OF QUANTITY, PROBABLY HAVE TO INVESTIGATE
+// I just changed the type the date is coming in as, not sure if it will cause problems
 export const getPantryByUser = async (
     userId: number
 ): Promise<FoodUnitType[]> => {
@@ -59,7 +63,10 @@ export const getPantryByUser = async (
         `SELECT 
             pantry.*, 
             food.food_name,
-            pantry.quantity::int AS quantity 
+            pantry.quantity::int AS quantity ,
+            pantry.added_date::text AS added_date,
+            pantry.bestbefore_date::text AS bestbefore_date,
+            pantry.expiry_date::text AS expiry_date
         FROM pantry 
         JOIN food ON pantry.food_id = food.id
         WHERE user_id = $1 

@@ -13,6 +13,7 @@ type FoodUnitType = {
     quantity: number;
     user_id: number;
     food_name: string;
+    units: string | null;
 };
 
 type FoodGroupType = Record<number, string>;
