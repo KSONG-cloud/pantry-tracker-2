@@ -2,6 +2,8 @@ import { pool } from '../database/database.js';
 import type { QueryResult } from 'pg';
 import type {
     FoodMapType,
+    FoodUnitType,
+    FoodGroupType,
 } from '../types/types.js';
 
 // Food
@@ -17,6 +19,39 @@ export const getFoodMap = async (): Promise<
     return result.rows;
 };
 
+export const addFood = async (name: string): Promise<FoodMapType> => {
+    // Empty string and null check
+    if (!name || !name.trim()) {
+        throw new Error('Food name cannot be empty');
+    }
+
+    const result: QueryResult<FoodMapType> = await pool.query(
+        `INSERT INTO food (food_name) 
+        VALUES ($1)
+        RETURNING id, food_name`,
+        [name]
+    );
+
+    if (result.rowCount === null) {
+        throw new Error('Unexpected null rowCount');
+    }
+
+    if (result.rowCount <= 0) {
+        throw new Error('Insert into food failed!');
+    }
+
+    if (result.rows.length === 0) {
+        throw new Error('No rows returned');
+    }
+
+    const row = result.rows[0];
+
+    if (!row) {
+        throw new Error('Insert into food failed!');
+    }
+
+    return row;
+};
 export const getPantryByUser = async (
     userId: number
 ): Promise<FoodUnitType[]> => {
