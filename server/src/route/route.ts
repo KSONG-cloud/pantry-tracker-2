@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import {
+    getFoodMap,
     getPantryByUser,
     getFoodGroupsByUser,
 } from '../controller/controller.js';
 
 const router = Router();
 
-router.get('/users/:id/pantry', getPantryByUser);
+// Food Routes
+router.get('/foodmap', getFoodMap);
 
 router.get('/users/:id/food-groups', getFoodGroupsByUser);
 

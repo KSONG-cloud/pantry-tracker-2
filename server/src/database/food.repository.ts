@@ -1,6 +1,21 @@
 import { pool } from '../database/database.js';
 import type { QueryResult } from 'pg';
-import type { FoodUnitType, FoodGroupType } from '../types/types.js';
+import type {
+    FoodMapType,
+} from '../types/types.js';
+
+// Food
+export const getFoodMap = async (): Promise<
+    { id: number; food_name: string }[]
+> => {
+    const result: QueryResult<{ id: number; food_name: string }> =
+        await pool.query(
+            `SELECT *, food.id::int as id
+        FROM food`
+        );
+
+    return result.rows;
+};
 
 export const getPantryByUser = async (
     userId: number

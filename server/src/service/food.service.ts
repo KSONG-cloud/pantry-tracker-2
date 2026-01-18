@@ -1,6 +1,16 @@
 import * as foodRepository from '../database/food.repository.js';
-import type { FoodUnitType, FoodGroupType } from '../types/types.js';
+import type {
+    FoodMapType,
+} from '../types/types.js';
 
+// Food
+export const getFoodMap = async (): Promise<
+    FoodMapType[]
+> => {
+    return foodRepository.getFoodMap();
+};
+
+// Pantry
 export const getPantryByUser = async (
     userId: number
 ): Promise<FoodUnitType[]> => {

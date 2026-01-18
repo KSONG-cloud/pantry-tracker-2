@@ -1,6 +1,6 @@
-type food = {
+type FoodMapType = {
     id: number;
-    name: string;
+    food_name: string;
 };
 
 type FoodUnitType = {
@@ -17,4 +17,4 @@ type FoodUnitType = {
 
 type FoodGroupType = Record<number, string>;
 
-export type { food, FoodUnitType, FoodGroupType };
+export type { FoodMapType, FoodUnitType, FoodGroupType };

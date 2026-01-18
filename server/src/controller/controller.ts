@@ -13,6 +13,17 @@ const handleError = (error: unknown, res: Response) => {
     }
 };
 
+// Food
+export const getFoodMap = async (req: Request, res: Response) => {
+    try {
+        const food = await foodService.getFoodMap();
+        res.status(200).json(food);
+    } catch (error) {
+        handleError(error, res);
+    }
+};
+
+// Pantry
 export const getPantryByUser = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.id);
