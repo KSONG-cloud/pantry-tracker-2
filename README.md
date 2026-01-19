@@ -126,7 +126,3 @@ If you want to add features or fix bugs:
 
 See the `LICENSE` file in the repository root.
 
----
-If you'd like, I can also:
-- Add a `.env.example` file under `server/` with the expected variables, or
-- Add a small SQL schema file for the initial tables. Which would you like next?
