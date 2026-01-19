@@ -3,6 +3,9 @@ import { AddItemModal } from './add_item_modal';
 import { FoodGroup } from './group_of_food';
 import { FoodItemModal } from './food_item_modal';
 
+// Helpers
+import * as helper from "../../helpers/track_pantry.helper"
+
 // React stuff
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -41,7 +44,9 @@ function TrackPantry() {
 
     const fetchFoodGroups = async () => {
         // Fetch food groups from backend
-        const res = await fetch(`http://localhost:3001/users/${USERID}/food-groups`);
+        const res = await fetch(
+            `http://localhost:3001/users/${USERID}/food-groups`
+        );
         const resJSON = await res.json();
         setFoodGroups(resJSON);
     };
@@ -49,19 +54,57 @@ function TrackPantry() {
     // add Food Item and Group Handlers
     const addFoodItem = async (foodItem: FoodUnitType) => {
         // Logic to add food item to pantry
+
+        // Standardise Case of food_name to Capital Case
+        const normalisedFoodItem: FoodUnitType = {
+            ...foodItem,
+            food_name: helper.normaliseFoodName(foodItem.food_name),
+        };
+
+        // Capture previous snapshot
+        const previous = foodItems;
+
         // Optimistically update UI
-        setFoodItems((prev) => [...prev, foodItem]);
+        setFoodItems((prev) => [...prev, normalisedFoodItem]);
 
-        // Send GET request to backend to see if food name exists
+        console.log('adding the following food:', normalisedFoodItem);
 
-        // If not, send POST request to backend to add food name
+        // Just send POST request to add item
+        try {
+            const res = await fetch(
+                `http://localhost:3001/users/${USERID}/pantry`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(normalisedFoodItem),
+                }
+            );
 
-        // Then send GET request to backend to get food ID
-
-        // Change to correct food ID in foodItem
-
-        // Send POST request to backend to add food item
+            // If POST request fail:
+            if (!res.ok) {
+                // Throw Error message on failure to update
+                throw new Error(
+                    `Request failed: ${res.status} ${res.statusText}`
+                );
+            } else {
+                const newItem = await res.json();
+                console.log('New item from server:', newItem);
+                // Replace the optimistic item with the server response (which has the real ID)
+                setFoodItems((prev) =>
+                    prev.map((item) =>
+                        item.id === normalisedFoodItem.id ? newItem : item
+                    )
+                );
+            }
+        } catch (err) {
+            // rollback
+            setFoodItems(previous);
+            console.error(err);
+        }
     };
+
     const addFoodGroup = async (groupName: string) => {
         // Logic to add food group
 
@@ -110,6 +153,8 @@ function TrackPantry() {
     const saveItemModal = async (editedFood: FoodUnitType) => {
         // Logic to save edited food item
         console.log('Saving edited food item:', editedFood);
+
+        // TODO: Standardise Case of food_name to Capital Case
 
         // Optimistically update UI
         changeFoodItem(editedFood);

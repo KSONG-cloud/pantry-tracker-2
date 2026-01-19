@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import * as foodService from '../service/food.service.js';
+import type { FoodUnitType } from '../types/types.js';
 
 const handleError = (error: unknown, res: Response) => {
     console.error('Controller error:', error);
@@ -43,12 +44,23 @@ export const getPantryByUser = async (req: Request, res: Response) => {
 export const addFoodItemPantry = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.userId);
-        const item = req.body;
+        const item: FoodUnitType = req.body;
 
         if (Number.isNaN(userId)) {
-            res.status(400).json({ message: 'Invalid user id' });
-            return;
+            return res.status(400).json({ message: 'Invalid user id' });
         }
+
+        if (
+            !item.food_name ||
+            typeof item.food_name !== 'string' ||
+            item.quantity == null ||
+            item.foodgroup_id == null ||
+            item.added_date == null ||
+            item.user_id !== userId
+        ) {
+            return res.status(400).json({ message: 'Invalid request body' });
+        }
+
 
         const newFoodItem = await foodService.addFoodItemPantry(item);
         res.status(201).json(newFoodItem);

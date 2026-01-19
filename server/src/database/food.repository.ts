@@ -98,7 +98,7 @@ export const addFoodItemPantry = async (foodItem: FoodUnitType) => {
             foodItem.added_date,
             foodItem.quantity,
             foodItem.units,
-            foodItem.group_id,
+            foodItem.foodgroup_id,
             foodItem.user_id,
         ]
     );
@@ -121,7 +121,10 @@ export const addFoodItemPantry = async (foodItem: FoodUnitType) => {
         throw new Error('Insert food item into pantry failed!');
     }
 
-    return row;
+    // There is no food name here...
+    const rowWithName = {...row, food_name: foodItem.food_name};
+
+    return rowWithName;
 };
 
 // Account/Food Group
