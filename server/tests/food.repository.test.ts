@@ -16,7 +16,6 @@ import * as foodRepository from '../src/database/food.repository';
 
 // Types
 import type { FoodMapType } from '../src/types/types';
-import { devNull } from 'node:os';
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('DB_NAME:', process.env.DB_NAME);
