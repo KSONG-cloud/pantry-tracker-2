@@ -277,20 +277,22 @@ function TrackPantry() {
 
     return (
         <>
-            {Object.keys(foodGroups).map((groupId) => {
-                const id = Number(groupId);
-                return (
-                    <FoodGroup
-                        key={id}
-                        id={id}
-                        name={foodGroups[id]}
-                        list={groupFoodItems[id] || []}
-                        changeFoodItem={changeFoodItem}
-                        onFoodClick={openItemModal}
-                        openAddItemModal={openAddItemModal}
-                    />
-                );
-            })}
+            {Object.keys(foodGroups)
+                .filter((groupId) => groupId === "-1" ? Object.keys(groupFoodItems).includes("-1") : true)
+                .map((groupId) => {
+                    const id = Number(groupId);
+                    return (
+                        <FoodGroup
+                            key={id}
+                            id={id}
+                            name={foodGroups[id]}
+                            list={groupFoodItems[id] || []}
+                            changeFoodItem={changeFoodItem}
+                            onFoodClick={openItemModal}
+                            openAddItemModal={openAddItemModal}
+                        />
+                    );
+                })}
 
             {/* Food Item Modal */}
             {itemModalFoodUnit && (
