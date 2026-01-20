@@ -112,7 +112,7 @@ describe('getPantryByUser', () => {
                 added_date: '2024-09-08',
                 quantity: 3,
                 units: null,
-                foodgroup_id: "6",
+                foodgroup_id: '6',
                 removed: false,
                 user_id: 1,
                 food_name: 'Chicken',
@@ -125,7 +125,7 @@ describe('getPantryByUser', () => {
                 added_date: '2024-03-08',
                 quantity: 6,
                 units: null,
-                foodgroup_id: "3",
+                foodgroup_id: '3',
                 removed: false,
                 user_id: 1,
                 food_name: 'Milk',
@@ -138,7 +138,7 @@ describe('getPantryByUser', () => {
                 added_date: '2024-07-08',
                 quantity: 5,
                 units: null,
-                foodgroup_id: "6",
+                foodgroup_id: '6',
                 removed: false,
                 user_id: 1,
                 food_name: 'Egg',
@@ -151,7 +151,7 @@ describe('getPantryByUser', () => {
                 added_date: '2024-09-08',
                 quantity: 10,
                 units: null,
-                foodgroup_id: "4",
+                foodgroup_id: '4',
                 removed: false,
                 user_id: 1,
                 food_name: 'Chocolate',
@@ -164,7 +164,7 @@ describe('getPantryByUser', () => {
                 added_date: '2024-09-08',
                 quantity: 10,
                 units: null,
-                foodgroup_id: "4",
+                foodgroup_id: '4',
                 removed: false,
                 user_id: 1,
                 food_name: 'Chocolate',
@@ -177,7 +177,7 @@ describe('getPantryByUser', () => {
                 added_date: '2024-09-08',
                 quantity: 10,
                 units: null,
-                foodgroup_id: "4",
+                foodgroup_id: '4',
                 removed: false,
                 user_id: 1,
                 food_name: 'Chocolate',
@@ -190,7 +190,7 @@ describe('getPantryByUser', () => {
                 added_date: '2024-09-08',
                 quantity: 10,
                 units: null,
-                foodgroup_id: "4",
+                foodgroup_id: '4',
                 removed: false,
                 user_id: 1,
                 food_name: 'Chocolate',
@@ -203,19 +203,20 @@ describe('getPantryByUser', () => {
                 added_date: '2024-09-08',
                 quantity: 10,
                 units: null,
-                foodgroup_id: "4",
+                foodgroup_id: '4',
                 removed: false,
                 user_id: 1,
                 food_name: 'Chocolate',
             },
         ].sort((a, b) => a.id - b.id);
 
-
-        const expectedFixDate = expectedSorted.map(row => ({
+        const expectedFixDate = expectedSorted.map((row) => ({
             ...row,
             expiry_date: row.expiry_date ? new Date(row.expiry_date) : null,
-            bestbefore_date:  row.bestbefore_date ? new Date(row.bestbefore_date) : null,
-            added_date: new Date(row.added_date)
+            bestbefore_date: row.bestbefore_date
+                ? new Date(row.bestbefore_date)
+                : null,
+            added_date: new Date(row.added_date),
         }));
 
         const resultSorted = result.sort((a, b) => a.id - b.id);
