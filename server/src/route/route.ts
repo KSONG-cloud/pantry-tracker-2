@@ -4,6 +4,7 @@ import {
     getPantryByUser,
     addFoodItemPantry,
     patchFoodItemPantry,
+    deletePantryByUser,
     getFoodGroupsByUser,
 } from '../controller/controller.js';
 
@@ -19,6 +20,9 @@ router.get('/users/:userId/pantry', getPantryByUser);
 router.post('/users/:userId/pantry', addFoodItemPantry);
 // PATCH
 router.patch('/users/:userId/pantry/:pantryId', patchFoodItemPantry);
+// DELETE
+router.patch('/users/:userId/pantry/:pantryId/delete', deletePantryByUser);
+
 // Food Groups Routes
 router.get('/users/:id/food-groups', getFoodGroupsByUser);
 

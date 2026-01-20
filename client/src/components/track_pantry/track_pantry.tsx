@@ -152,7 +152,7 @@ function TrackPantry() {
                 }
             );
 
-            // If POST request fail:
+            // If PATCH request fail:
             if (!res.ok) {
                 // Throw Error message on failure to update
                 throw new Error(
@@ -186,7 +186,35 @@ function TrackPantry() {
 
     // Delete Food Item and Group Handlers
     const deleteFoodItem = async (foodId: number) => {
+
+        // Capture previous snapshot
+        const previous = foodItems;
+
+        // Optimistically update UI
         setFoodItems((prev) => prev.filter((item) => item.id !== foodId));
+
+        // Just send PATCH request to add item
+        try {
+            const res = await fetch(
+                `http://localhost:3001/users/${USERID}/pantry/${foodId}/delete`,
+                {
+                    method: 'PATCH'
+                }
+            );
+
+            // If PATCH request fail:
+            if (!res.ok) {
+                // Throw Error message on failure to update
+                throw new Error(
+                    `Request failed: ${res.status} ${res.statusText}`
+                );
+            } 
+        } catch (err) {
+            // rollback
+            setFoodItems(previous);
+            console.error(err);
+        }
+
     };
 
     const deleteFoodGroup = async (foodGroupId: number) => {};

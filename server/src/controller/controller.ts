@@ -74,8 +74,6 @@ export const patchFoodItemPantry = async (req: Request, res: Response) => {
         const pantryId = Number(req.params.pantryId);
         const updates: Partial<PantryRow> = req.body;
 
-        console.log('I am in controller');
-
         if (Number.isNaN(userId) || Number.isNaN(pantryId)) {
             return res
                 .status(400)
@@ -91,6 +89,27 @@ export const patchFoodItemPantry = async (req: Request, res: Response) => {
     } catch (error) {
         handleError(error, res);
     }
+};
+
+
+export const deletePantryByUser = async (req: Request, res: Response) => {
+    try {
+        const userId = Number(req.params.userId);
+        const pantryId = Number(req.params.pantryId);
+        console.log(userId, pantryId);
+
+        if (Number.isNaN(userId) || Number.isNaN(pantryId)) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid user or pantry id' });
+        }
+
+        const result = await foodService.deletePantryByUser(pantryId);
+        res.status(200).json(result);
+    } catch (error) {
+        handleError(error, res);
+    }
+
 };
 
 export const getFoodGroupsByUser = async (req: Request, res: Response) => {

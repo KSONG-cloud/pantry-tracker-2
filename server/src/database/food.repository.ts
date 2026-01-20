@@ -149,6 +149,22 @@ export const patchFoodItemPantry = async (
     return result.rows[0];
 };
 
+export const deletePantry = async (
+    pantryId: number
+) => {
+    const result = await pool.query(
+        `UPDATE pantry
+        SET removed = true
+        WHERE id = $1
+        RETURNING *`,
+        [pantryId]
+    );
+
+    if (result.rows.length === 0) throw new Error('Food item not found');
+
+    return result.rows[0];
+};
+
 // Account/Food Group
 type FoodGroupsRow = {
     foodgroups: FoodGroupType;

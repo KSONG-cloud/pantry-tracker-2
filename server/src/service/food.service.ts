@@ -126,6 +126,12 @@ export const patchFoodItemPantry = async (
     return updatedFoodItem;
 };
 
+export const deletePantryByUser = async (
+    pantryId: number
+) => {
+    return foodRepository.deletePantry(pantryId);
+};
+
 // Account/Food Group
 export const getFoodGroupsByUser = async (
     userId: number
