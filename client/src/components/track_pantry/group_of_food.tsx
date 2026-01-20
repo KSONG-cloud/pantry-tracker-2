@@ -7,13 +7,13 @@ import { FoodList } from './list_of_food';
 import '@/styles/track_pantry/group_of_food.css';
 
 // Types
-import type { FoodUnitType } from '../../types/food';
+import type { FoodUnitType, FoodEditType } from '../../types/food';
 
 interface FoodGroupProps {
     id: number;
     name: string;
     list: FoodUnitType[];
-    changeFoodItem: (editedFood: FoodUnitType) => void;
+    changeFoodItem: (edits: FoodEditType) => void;
     onFoodClick: (foodItem: FoodUnitType) => void;
     openAddItemModal: (groupId: number) => void;
 }

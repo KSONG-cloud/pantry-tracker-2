@@ -6,7 +6,7 @@ import PlusIcon from '../../assets/icons/plus.svg';
 import MinusIcon from '../../assets/icons/minus.svg';
 
 // Types
-import type { FoodUnitType } from '../../types/food';
+import type { FoodUnitType, FoodEditType } from '../../types/food';
 
 // React stuff
 import { useState } from 'react';
@@ -14,30 +14,15 @@ import { useState } from 'react';
 interface FoodUnitProps {
     food: FoodUnitType;
     onFoodClick: (foodItem: FoodUnitType) => void;
-    changeFoodItem: (editedFood: FoodUnitType) => void;
+    changeFoodItem: (edits: FoodEditType) => void;
 }
 
 const FoodUnit = ({ food, onFoodClick, changeFoodItem }: FoodUnitProps) => {
     const handleChange = async (delta: number) => {
-        const updatedFood: FoodUnitType = {
-            ...food,
+        changeFoodItem({
+            id: food.id,
             quantity: Math.max(0, (Number(food.quantity) || 0) + delta),
-        };
-        changeFoodItem(updatedFood);
-
-        // Optimistically update foodItem as well
-
-        // Update quantity in backend
-
-        // try {
-        // await fetch(`/api/food/${id}`, {
-        //     method: 'PATCH',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ quantity: quantity + delta }),
-        // });
-        // } catch (err) {
-        // setQuantity(prev => prev - delta); // rollback on error
-        // }
+        });
     };
 
     const formatDate = (

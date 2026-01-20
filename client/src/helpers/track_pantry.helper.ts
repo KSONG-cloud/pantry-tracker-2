@@ -14,3 +14,15 @@ export const normaliseFoodName = (input: string): string => {
 
     return name;
 };
+
+export function diffObject<T>(original: T, edited: T): Partial<T> {
+    const diff: Partial<T> = {};
+
+    for (const key in edited) {
+        if (!Object.is(original[key], edited[key])) {
+            diff[key] = edited[key];
+        }
+    }
+
+    return diff;
+}

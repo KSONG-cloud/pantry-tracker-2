@@ -4,13 +4,17 @@ import { FoodGroup } from './group_of_food';
 import { FoodItemModal } from './food_item_modal';
 
 // Helpers
-import * as helper from "../../helpers/track_pantry.helper"
+import * as helper from '../../helpers/track_pantry.helper';
 
 // React stuff
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 // Types
-import type { FoodUnitType, FoodGroupType } from '../../types/food';
+import type {
+    FoodUnitType,
+    FoodGroupType,
+    FoodEditType,
+} from '../../types/food';
 
 // Info
 const USERID = 1;
@@ -67,8 +71,6 @@ function TrackPantry() {
         // Optimistically update UI
         setFoodItems((prev) => [...prev, normalisedFoodItem]);
 
-        console.log('adding the following food:', normalisedFoodItem);
-
         // Just send POST request to add item
         try {
             const res = await fetch(
@@ -90,7 +92,6 @@ function TrackPantry() {
                 );
             } else {
                 const newItem = await res.json();
-                console.log('New item from server:', newItem);
                 // Replace the optimistic item with the server response (which has the real ID)
                 setFoodItems((prev) =>
                     prev.map((item) =>
@@ -116,15 +117,63 @@ function TrackPantry() {
     };
 
     // Change Food Item and Group Handlers
-    const changeFoodItem = async (editedFood: FoodUnitType) => {
+    const changeFoodItem = async (edits: FoodEditType) => {
+        // Standardise Case of food_name to Capital Case
+        const normalisedEdits: FoodEditType = {
+            ...edits,
+            ...(edits.food_name !== undefined && {
+                food_name: helper.normaliseFoodName(edits.food_name),
+            }),
+        };
+
+        // Capture previous snapshot
+        const previous = foodItems;
+
         // Logic to change food item in pantry
+        // Optimistically update UI
         setFoodItems((prev) =>
             prev.map((item) =>
-                item.id === editedFood.id ? { ...item, ...editedFood } : item
+                item.id === normalisedEdits.id
+                    ? { ...item, ...normalisedEdits }
+                    : item
             )
         );
 
-        // Send PUT request to backend to update food item
+        // Send PATCH request to backend to update food item
+        try {
+            const res = await fetch(
+                `http://localhost:3001/users/${USERID}/pantry/${normalisedEdits.id}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(normalisedEdits),
+                }
+            );
+
+            // If POST request fail:
+            if (!res.ok) {
+                // Throw Error message on failure to update
+                throw new Error(
+                    `Request failed: ${res.status} ${res.statusText}`
+                );
+            } else {
+                const newEdits = await res.json();
+                // Replace the optimistic item with the server response (which has the real ID)
+                setFoodItems((prev) =>
+                    prev.map((item) =>
+                        item.id === normalisedEdits.id
+                            ? { ...item, ...newEdits }
+                            : item
+                    )
+                );
+            }
+        } catch (err) {
+            // rollback
+            setFoodItems(previous);
+            console.error(err);
+        }
     };
 
     // Debugging useEffect
@@ -151,15 +200,17 @@ function TrackPantry() {
     };
 
     const saveItemModal = async (editedFood: FoodUnitType) => {
-        // Logic to save edited food item
-        console.log('Saving edited food item:', editedFood);
-
-        // TODO: Standardise Case of food_name to Capital Case
+        // Isolate edits
+        const id = editedFood.id;
+        const food = foodItems.find((item) => item.id === id);
+        if (!food) return;
+        const edits: FoodEditType = {
+            ...helper.diffObject(food, editedFood),
+            id: id,
+        };
 
         // Optimistically update UI
-        changeFoodItem(editedFood);
-
-        // Send PUT request to backend to update food item
+        changeFoodItem(edits);
     };
 
     // Add Item Modal Handlers
@@ -180,7 +231,6 @@ function TrackPantry() {
     useEffect(() => {
         fetchFoodGroups();
         fetchFoodItems();
-        console.log('Fetched food groups and items from backend.');
     }, []);
 
     // Group food items by their foodgroup_id

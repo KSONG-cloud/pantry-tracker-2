@@ -1,9 +1,9 @@
-type FoodMapType = {
+export type FoodMapType = {
     id: number;
     food_name: string;
 };
 
-type FoodUnitType = {
+export type FoodUnitType = {
     id: number;
     food_id: number;
     foodgroup_id: number;
@@ -16,6 +16,18 @@ type FoodUnitType = {
     units: string | null;
 };
 
-type FoodGroupType = Record<number, string>;
+export type FoodGroupType = Record<number, string>;
 
-export type { FoodMapType, FoodUnitType, FoodGroupType };
+export type PantryRow = Partial<{
+    id: number;
+    food_id: number;
+    foodgroup_id: number;
+    expiry_date: Date | null;
+    bestbefore_date: Date | null;
+    added_date: Date;
+    quantity: number;
+    user_id: number;
+    units: string | null;
+}>;
+
+export type PantryEdit = PantryRow & Partial<{ food_name: string }>;

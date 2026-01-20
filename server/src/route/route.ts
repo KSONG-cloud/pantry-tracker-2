@@ -3,6 +3,7 @@ import {
     getFoodMap,
     getPantryByUser,
     addFoodItemPantry,
+    patchFoodItemPantry,
     getFoodGroupsByUser,
 } from '../controller/controller.js';
 
@@ -16,6 +17,8 @@ router.get('/foodmap', getFoodMap);
 router.get('/users/:userId/pantry', getPantryByUser);
 // POST
 router.post('/users/:userId/pantry', addFoodItemPantry);
+// PATCH
+router.patch('/users/:userId/pantry/:pantryId', patchFoodItemPantry);
 // Food Groups Routes
 router.get('/users/:id/food-groups', getFoodGroupsByUser);
 

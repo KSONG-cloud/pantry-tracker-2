@@ -4,6 +4,7 @@ import type {
     FoodMapType,
     FoodUnitType,
     FoodGroupType,
+    PantryRow,
 } from '../types/types.js';
 
 // Food
@@ -122,9 +123,30 @@ export const addFoodItemPantry = async (foodItem: FoodUnitType) => {
     }
 
     // There is no food name here...
-    const rowWithName = {...row, food_name: foodItem.food_name};
+    const rowWithName = { ...row, food_name: foodItem.food_name };
 
     return rowWithName;
+};
+
+export const patchFoodItemPantry = async (
+    userId: number,
+    pantryId: number,
+    setClause: string,
+    values: PantryRow[keyof PantryRow][], // COME BACK TO CHANGE THE TYPE
+    update_length: number
+): Promise<FoodUnitType> => {
+    const result = await pool.query(
+        `UPDATE pantry
+        SET ${setClause}
+        WHERE id =$${update_length + 1} 
+        AND user_id = $${update_length + 2}
+        RETURNING *`,
+        [...values, pantryId, userId]
+    );
+
+    if (result.rows.length === 0) throw new Error('Food item not found');
+
+    return result.rows[0];
 };
 
 // Account/Food Group

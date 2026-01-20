@@ -5,12 +5,12 @@ import { FoodUnit } from './one_unit_of_food';
 import '@/styles/track_pantry/list_of_food.css';
 
 // Types
-import type { FoodUnitType } from '../../types/food';
+import type { FoodUnitType, FoodEditType } from '../../types/food';
 
 interface FoodListProps {
     foodList: FoodUnitType[];
     onFoodClick: (foodItem: FoodUnitType) => void;
-    changeFoodItem: (editedFood: FoodUnitType) => void;
+    changeFoodItem: (edits: FoodEditType) => void;
 }
 
 const FoodList = ({ foodList, onFoodClick, changeFoodItem }: FoodListProps) => {
