@@ -2,6 +2,7 @@
 import { AddItemModal } from './add_item_modal';
 import { FoodGroup } from './group_of_food';
 import { FoodItemModal } from './food_item_modal';
+import { FoodUnit } from './one_unit_of_food';
 
 // Helpers
 import * as helper from '../../helpers/track_pantry.helper';
@@ -15,6 +16,14 @@ import type {
     FoodGroupType,
     FoodEditType,
 } from '../../types/food';
+
+// Dnd Kit
+import {
+    DndContext,
+    DragOverlay,
+    type DragEndEvent,
+    type DragStartEvent,
+} from '@dnd-kit/core';
 
 // Info
 const USERID = 1;
@@ -41,6 +50,11 @@ function TrackPantry() {
     // Editing Food Group State
     const [editingGroupId, setEditingGroupId] = useState<number | null>(null);
     const [tempGroupName, setTempGroupName] = useState<string>('');
+
+    // Dnd Kit States
+    const [activeFoodUnit, setActiveFoodUnit] = useState<FoodUnitType | null>(
+        null
+    );
 
     // Fetching Food Items and Groups from Database
     const fetchFoodItems = async () => {
@@ -295,39 +309,73 @@ function TrackPantry() {
         return groupedItems;
     }, [foodItems, foodGroups]);
 
+    // Dnd Kit Handlers
+    const handleDragStart = (event: DragStartEvent) => {
+        const food = foodItems.find(
+            (foodItem) => foodItem.id === event.active.id
+        );
+        setActiveFoodUnit(food ?? null);
+    };
+
+    const handleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (!over) return;
+
+        const foodItemId = Number(active.id);
+        const newFoodGroupId = Number(over.id);
+
+        changeFoodItem({ id: foodItemId, foodgroup_id: newFoodGroupId });
+
+        setActiveFoodUnit(null);
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
 
     return (
         <>
-            {foodGroups
-                .filter((foodGroup) =>
-                    foodGroup.is_system
-                        ? Object.keys(groupFoodItems).includes(
-                              String(foodGroup.id)
-                          )
-                        : true
-                )
-                .map((foodGroup) => {
-                    const id = Number(foodGroup.id);
-                    const name = foodGroup.name;
-                    return (
-                        <FoodGroup
-                            key={id}
-                            id={id}
-                            name={name}
-                            list={groupFoodItems[id] || []}
-                            changeFoodItem={changeFoodItem}
-                            onFoodClick={openItemModal}
-                            openAddItemModal={openAddItemModal}
-                            editFoodGroup={editFoodGroup}
-                            // tempGroupName={tempGroupName}
-                            // setTempGroupName={setTempGroupName}
-                        />
-                    );
-                })}
+            <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                {foodGroups
+                    .filter((foodGroup) =>
+                        foodGroup.is_system
+                            ? Object.keys(groupFoodItems).includes(
+                                  String(foodGroup.id)
+                              )
+                            : true
+                    )
+                    .map((foodGroup) => {
+                        const id = Number(foodGroup.id);
+                        const name = foodGroup.name;
+                        return (
+                            <FoodGroup
+                                key={id}
+                                id={id}
+                                name={name}
+                                list={groupFoodItems[id] || []}
+                                changeFoodItem={changeFoodItem}
+                                onFoodClick={openItemModal}
+                                openAddItemModal={openAddItemModal}
+                                editFoodGroup={editFoodGroup}
+                                // tempGroupName={tempGroupName}
+                                // setTempGroupName={setTempGroupName}
+                            />
+                        );
+                    })}
 
+                <DragOverlay>
+                    {activeFoodUnit ? (
+                        <FoodUnit
+                            key={activeFoodUnit.id}
+                            food={activeFoodUnit}
+                            onFoodClick={() => {}}
+                            changeFoodItem={async () => {}}
+                            isDragging
+                        />
+                    ) : null}
+                </DragOverlay>
+            </DndContext>
             {/* Food Item Modal */}
             {itemModalFoodUnit && (
                 <FoodItemModal

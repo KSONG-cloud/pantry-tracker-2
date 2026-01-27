@@ -8,16 +8,23 @@ import MinusIcon from '../../assets/icons/minus.svg';
 // Types
 import type { FoodUnitType, FoodEditType } from '../../types/food';
 
-// React stuff
-import { useState } from 'react';
+
+// Dnd Kit
+import { useDraggable } from '@dnd-kit/core';
 
 interface FoodUnitProps {
     food: FoodUnitType;
     onFoodClick: (foodItem: FoodUnitType) => void;
     changeFoodItem: (edits: FoodEditType) => void;
+    isDragging?: boolean;
 }
 
-const FoodUnit = ({ food, onFoodClick, changeFoodItem }: FoodUnitProps) => {
+const FoodUnit = ({
+    food,
+    onFoodClick,
+    changeFoodItem,
+    isDragging = false,
+}: FoodUnitProps) => {
     const handleChange = async (delta: number) => {
         changeFoodItem({
             id: food.id,
@@ -44,8 +51,27 @@ const FoodUnit = ({ food, onFoodClick, changeFoodItem }: FoodUnitProps) => {
         dateText = formatDate('Added On', food.added_date);
     }
 
+    // Dnd
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+        id: food.id, // MUST be unique
+        data: {
+            foodGroupId: food.foodgroup_id,
+        },
+    });
+
+    const style = transform
+        ? { transform: `translate(${transform.x}px, ${transform.y}px)` }
+        : undefined;
+
     return (
-        <div className="foodUnit" onClick={() => onFoodClick(food)}>
+        <div
+            className="foodUnit"
+            onClick={() => onFoodClick(food)}
+            ref={setNodeRef}
+            {...listeners}
+            {...attributes}
+            style={style}
+        >
             <div className="food-icon">🥕</div>
             <div>
                 <div className="food-name">{food.food_name}</div>
