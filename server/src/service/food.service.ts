@@ -19,6 +19,8 @@ export const getPantryByUser = async (
     // Business logic lives here
     // (e.g. permissions, transformations later)
 
+    // Should process it here to FoodMapType
+
     return foodRepository.getPantryByUser(userId);
 };
 
@@ -135,6 +137,7 @@ export const deletePantryByUser = async (
 // Account/Food Group
 export const getFoodGroupsByUser = async (
     userId: number
-): Promise<FoodGroupType> => {
+) => {
+
     return foodRepository.getFoodGroupsByUser(userId);
 };

@@ -114,7 +114,8 @@ export const deletePantryByUser = async (req: Request, res: Response) => {
 
 export const getFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.id);
+        const userId = Number(req.params.userId);
+
 
         if (Number.isNaN(userId)) {
             res.status(400).json({ message: 'Invalid user id' });

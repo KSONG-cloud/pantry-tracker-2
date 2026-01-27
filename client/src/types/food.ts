@@ -3,7 +3,12 @@ export type Food = {
     name: string;
 };
 
-export type FoodGroupType = Record<number, string>;
+export type FoodGroupType = {
+    id: number;
+    name: string;
+    display_order: number;
+    is_system: boolean;
+};
 
 export type FoodUnitType = {
     id: number;

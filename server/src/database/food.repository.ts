@@ -172,19 +172,22 @@ type FoodGroupsRow = {
 
 export const getFoodGroupsByUser = async (
     userId: number
-): Promise<FoodGroupType> => {
-    const result: QueryResult<FoodGroupsRow> = await pool.query(
-        `SELECT foodgroups 
-        FROM account 
-        WHERE id = $1`,
+) => {
+    const result = await pool.query(
+        `SELECT
+            id,
+            name, 
+            display_order,
+            is_system
+        FROM foodgroup
+        WHERE user_id = $1`,
         [userId]
-    );
+    )
 
-    const foodGroups = result.rows[0]?.foodgroups;
 
-    if (!foodGroups) {
+    if (!result.rows) {
         throw new Error('Account not found');
     }
 
-    return foodGroups;
+    return result.rows;
 };

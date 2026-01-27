@@ -12,7 +12,7 @@ import type { FoodUnitType, FoodGroupType } from '../../types/food';
 
 interface AddItemModalProps {
     tempId: number;
-    foodGroups: FoodGroupType;
+    foodGroups: Record<number,string>;
     currentGroupId?: number;
     onClose: () => void;
     onAddItem: (newFood: FoodUnitType) => void;

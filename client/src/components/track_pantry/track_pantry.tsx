@@ -21,7 +21,8 @@ const USERID = 1;
 
 function TrackPantry() {
     // Food Items and Groups State
-    const [foodGroups, setFoodGroups] = useState<FoodGroupType>({});
+    const [foodGroups, setFoodGroups] = useState<FoodGroupType[]>([]);
+    const [groupMap, setGroupMap] = useState<Record<number, string>>({});
     const [foodItems, setFoodItems] = useState<FoodUnitType[]>([]);
     const tempIdCounter = useRef(-1);
 
@@ -37,6 +38,11 @@ function TrackPantry() {
     const [addItemModalOpen, setAddItemModalOpen] = useState<boolean>(false);
     const [foodGroupId, setFoodGroupId] = useState<number>(-1);
 
+    // Editing Food Group State
+    const [editingGroupId, setEditingGroupId] = useState<number | null>(null);
+    const [tempGroupName, setTempGroupName] = useState<string>('');
+
+
     // Fetching Food Items and Groups from Database
     const fetchFoodItems = async () => {
         // Fetch food items from backend
@@ -49,10 +55,16 @@ function TrackPantry() {
     const fetchFoodGroups = async () => {
         // Fetch food groups from backend
         const res = await fetch(
-            `http://localhost:3001/users/${USERID}/food-groups`
+            `http://localhost:3001/users/${USERID}/foodgroups`
         );
         const resJSON = await res.json();
-        setFoodGroups(resJSON);
+        const sortedFoodGroups: FoodGroupType[] = [...resJSON].sort((a,b) => a.display_order - b.display_order);
+        setFoodGroups(sortedFoodGroups);
+        const map: Record<number, string> = {};
+        sortedFoodGroups.forEach(group => {
+            map[group.id] = group.name
+        })
+        setGroupMap(map);
     };
 
     // add Food Item and Group Handlers
@@ -110,8 +122,8 @@ function TrackPantry() {
         // Logic to add food group
 
         // How many groups in foodGroups
-        const newGroupId = Object.keys(foodGroups).length + 1;
-        setFoodGroups((prev) => ({ ...prev, [newGroupId]: groupName }));
+        const count = foodGroups.length;
+        setFoodGroups((prev) => ([ ...prev, {id: tempIdCounter.current--, name: groupName, display_order: count + 1, is_system: false}]));
 
         // Send POST request to backend to add food group to account
     };
@@ -182,7 +194,12 @@ function TrackPantry() {
         // console.log('Grouped food items changed:', groupFoodItems);
     }, [foodItems]);
 
-    const changeFoodGroup = async (editedFoodGroups: FoodGroupType) => {};
+    const editFoodGroup = async (id: number, name: string) => {
+        console.log("foodGroups", foodGroups);
+        console.log("edited group", id, name);
+        setEditingGroupId(id);
+        setTempGroupName(name);
+    };
 
     // Delete Food Item and Group Handlers
     const deleteFoodItem = async (foodId: number) => {
@@ -277,19 +294,23 @@ function TrackPantry() {
 
     return (
         <>
-            {Object.keys(foodGroups)
-                .filter((groupId) => groupId === "-1" ? Object.keys(groupFoodItems).includes("-1") : true)
-                .map((groupId) => {
-                    const id = Number(groupId);
+            {foodGroups
+                .filter((foodGroup) => foodGroup.is_system ? Object.keys(groupFoodItems).includes(String(foodGroup.id)) : true)
+                .map((foodGroup) => {
+                    const id = Number(foodGroup.id);
+                    const name = foodGroup.name;
                     return (
                         <FoodGroup
                             key={id}
                             id={id}
-                            name={foodGroups[id]}
+                            name={name}
                             list={groupFoodItems[id] || []}
                             changeFoodItem={changeFoodItem}
                             onFoodClick={openItemModal}
                             openAddItemModal={openAddItemModal}
+                            editFoodGroup={editFoodGroup}
+                            // tempGroupName={tempGroupName}
+                            // setTempGroupName={setTempGroupName}
                         />
                     );
                 })}
@@ -298,7 +319,7 @@ function TrackPantry() {
             {itemModalFoodUnit && (
                 <FoodItemModal
                     food={itemModalFoodUnit}
-                    foodGroups={foodGroups}
+                    foodGroups={groupMap}
                     onSave={saveItemModal}
                     onDelete={deleteFoodItem}
                     onClose={closeItemModal}
@@ -309,7 +330,7 @@ function TrackPantry() {
             {addItemModalOpen && (
                 <AddItemModal
                     tempId={tempIdCounter.current--}
-                    foodGroups={foodGroups}
+                    foodGroups={groupMap}
                     currentGroupId={foodGroupId}
                     onClose={closeAddItemModal}
                     onAddItem={addFoodItem}
