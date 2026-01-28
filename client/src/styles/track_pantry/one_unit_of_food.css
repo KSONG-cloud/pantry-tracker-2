@@ -1,4 +1,4 @@
-.foodUnit {
+.food-unit {
     /* Layout */
     gap: 1rem;
     width: fit-content;
@@ -7,6 +7,7 @@
     padding: 0 clamp(12px, 2vw, 20px);
     justify-content: space-between;
     align-items: center;
+    flex-direction: row;
 
     display: flex;
 
@@ -14,6 +15,26 @@
     border-radius: clamp(12px, 4vw, 30px);
     background: #fefffe;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.drag-handle {
+    cursor: grab;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.drag-handle.dragging {
+    cursor: grabbing;
+}
+
+.food-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
 }
 
 .food-info {

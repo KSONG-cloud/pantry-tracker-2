@@ -8,7 +8,6 @@ import MinusIcon from '../../assets/icons/minus.svg';
 // Types
 import type { FoodUnitType, FoodEditType } from '../../types/food';
 
-
 // Dnd Kit
 import { useDraggable } from '@dnd-kit/core';
 
@@ -65,45 +64,54 @@ const FoodUnit = ({
 
     return (
         <div
-            className="foodUnit"
+            className={`food-unit ${isDragging ? 'dragging' : ''}`}
             onClick={() => onFoodClick(food)}
             ref={setNodeRef}
-            {...listeners}
-            {...attributes}
             style={style}
         >
-            <div className="food-icon">🥕</div>
-            <div>
-                <div className="food-name">{food.food_name}</div>
-                <div className="food-dateinfo">{dateText}</div>
-            </div>
+            {/* Drag Handle */}
             <div
-                className="food-unittoggle"
-                onClick={(e) => {
-                    e.stopPropagation();
-                }}
+                className={`drag-handle ${isDragging ? 'dragging' : ''}`}
+                {...listeners}
+                {...attributes}
+                onClick={(e) => e.stopPropagation()}
             >
-                <button
-                    className="food-addbutton"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleChange(1);
-                    }}
-                >
-                    <img src={PlusIcon} alt="Plus" />
-                </button>
-                <div className="food-quantity">
-                    {Number(food.quantity) || 0}
+                ⠿
+            </div>
+            <div className="food-content">
+                <div className="food-icon">🥕</div>
+                <div>
+                    <div className="food-name">{food.food_name}</div>
+                    <div className="food-dateinfo">{dateText}</div>
                 </div>
-                <button
-                    className="food-minusbutton"
+                <div
+                    className="food-unittoggle"
                     onClick={(e) => {
                         e.stopPropagation();
-                        handleChange(-1);
                     }}
                 >
-                    <img src={MinusIcon} alt="Minus" />
-                </button>
+                    <button
+                        className="food-addbutton"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleChange(1);
+                        }}
+                    >
+                        <img src={PlusIcon} alt="Plus" />
+                    </button>
+                    <div className="food-quantity">
+                        {Number(food.quantity) || 0}
+                    </div>
+                    <button
+                        className="food-minusbutton"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleChange(-1);
+                        }}
+                    >
+                        <img src={MinusIcon} alt="Minus" />
+                    </button>
+                </div>
             </div>
         </div>
     );
