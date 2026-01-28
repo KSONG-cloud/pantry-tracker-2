@@ -1,3 +1,6 @@
+// APIs
+import * as pantryAPI from '../../api/pantry.api';
+
 // Components
 import { AddItemModal } from './add_item_modal';
 import { FoodGroup } from './group_of_food';
@@ -62,9 +65,8 @@ function TrackPantry() {
     // Fetching Food Items and Groups from Database
     const fetchFoodItems = async () => {
         // Fetch food items from backend
-        const res = await fetch(`http://localhost:3001/users/${USERID}/pantry`);
-        const resJSON = await res.json();
-        setFoodItems(resJSON);
+        const res = await pantryAPI.getPantry(USERID);
+        setFoodItems(res);
         setLoading(false);
     };
 
@@ -103,32 +105,16 @@ function TrackPantry() {
 
         // Just send POST request to add item
         try {
-            const res = await fetch(
-                `http://localhost:3001/users/${USERID}/pantry`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(normalisedFoodItem),
-                }
+            const newItem: FoodUnitType = await pantryAPI.addFoodItem(
+                USERID,
+                normalisedFoodItem
             );
-
-            // If POST request fail:
-            if (!res.ok) {
-                // Throw Error message on failure to update
-                throw new Error(
-                    `Request failed: ${res.status} ${res.statusText}`
-                );
-            } else {
-                const newItem = await res.json();
-                // Replace the optimistic item with the server response (which has the real ID)
-                setFoodItems((prev) =>
-                    prev.map((item) =>
-                        item.id === normalisedFoodItem.id ? newItem : item
-                    )
-                );
-            }
+            // Replace the optimistic item with the server response (which has the real ID)
+            setFoodItems((prev) =>
+                prev.map((item) =>
+                    item.id === normalisedFoodItem.id ? newItem : item
+                )
+            );
         } catch (err) {
             // rollback
             setFoodItems(previous);
@@ -214,34 +200,18 @@ function TrackPantry() {
 
         // Send PATCH request to backend to update food item
         try {
-            const res = await fetch(
-                `http://localhost:3001/users/${USERID}/pantry/${normalisedEdits.id}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(normalisedEdits),
-                }
+            const newEdits = await pantryAPI.changeFoodItem(
+                USERID,
+                normalisedEdits
             );
-
-            // If PATCH request fail:
-            if (!res.ok) {
-                // Throw Error message on failure to update
-                throw new Error(
-                    `Request failed: ${res.status} ${res.statusText}`
-                );
-            } else {
-                const newEdits = await res.json();
-                // Replace the optimistic item with the server response (which has the real ID)
-                setFoodItems((prev) =>
-                    prev.map((item) =>
-                        item.id === normalisedEdits.id
-                            ? { ...item, ...newEdits }
-                            : item
-                    )
-                );
-            }
+            // Replace the optimistic item with the server response (which has the real ID)
+            setFoodItems((prev) =>
+                prev.map((item) =>
+                    item.id === normalisedEdits.id
+                        ? { ...item, ...newEdits }
+                        : item
+                )
+            );
         } catch (err) {
             // rollback
             setFoodItems(previous);
@@ -272,20 +242,7 @@ function TrackPantry() {
 
         // Just send PATCH request to add item
         try {
-            const res = await fetch(
-                `http://localhost:3001/users/${USERID}/pantry/${foodId}/delete`,
-                {
-                    method: 'PATCH',
-                }
-            );
-
-            // If PATCH request fail:
-            if (!res.ok) {
-                // Throw Error message on failure to update
-                throw new Error(
-                    `Request failed: ${res.status} ${res.statusText}`
-                );
-            }
+            pantryAPI.deleteFoodItem(USERID, foodId);
         } catch (err) {
             // rollback
             setFoodItems(previous);
