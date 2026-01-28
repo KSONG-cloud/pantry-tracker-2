@@ -374,46 +374,59 @@ function TrackPantry() {
 
     return (
         <>
-            <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                {foodGroups
-                    .filter((foodGroup) =>
-                        foodGroup.is_system
-                            ? Object.keys(groupFoodItems).includes(
-                                  String(foodGroup.id)
-                              )
-                            : true
-                    )
-                    .map((foodGroup) => {
-                        const id = Number(foodGroup.id);
-                        const name = foodGroup.name;
-                        return (
-                            <FoodGroup
-                                key={id}
-                                id={id}
-                                name={name}
-                                list={groupFoodItems[id] || []}
-                                changeFoodItem={changeFoodItem}
-                                onFoodClick={openItemModal}
-                                openAddItemModal={openAddItemModal}
-                                editFoodGroup={editFoodGroup}
-                                // tempGroupName={tempGroupName}
-                                // setTempGroupName={setTempGroupName}
-                            />
-                        );
-                    })}
+            <div className="main-content">
+                <DndContext
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                >
+                    {foodGroups
+                        .filter((foodGroup) =>
+                            foodGroup.is_system
+                                ? Object.keys(groupFoodItems).includes(
+                                      String(foodGroup.id)
+                                  )
+                                : true
+                        )
+                        .map((foodGroup) => {
+                            const id = Number(foodGroup.id);
+                            const name = foodGroup.name;
+                            return (
+                                <FoodGroup
+                                    key={id}
+                                    id={id}
+                                    name={name}
+                                    list={groupFoodItems[id] || []}
+                                    changeFoodItem={changeFoodItem}
+                                    onFoodClick={openItemModal}
+                                    openAddItemModal={openAddItemModal}
+                                    editFoodGroup={editFoodGroup}
+                                    // tempGroupName={tempGroupName}
+                                    // setTempGroupName={setTempGroupName}
+                                />
+                            );
+                        })}
 
-                <DragOverlay>
-                    {activeFoodUnit ? (
-                        <FoodUnit
-                            key={activeFoodUnit.id}
-                            food={activeFoodUnit}
-                            onFoodClick={() => {}}
-                            changeFoodItem={async () => {}}
-                            isDragging
-                        />
-                    ) : null}
-                </DragOverlay>
-            </DndContext>
+                    <DragOverlay>
+                        {activeFoodUnit ? (
+                            <FoodUnit
+                                key={activeFoodUnit.id}
+                                food={activeFoodUnit}
+                                onFoodClick={() => {}}
+                                changeFoodItem={async () => {}}
+                                isDragging
+                            />
+                        ) : null}
+                    </DragOverlay>
+                </DndContext>
+
+                {/* Add Food Group Button */}
+                <button
+                    className="add-foodgroup-button"
+                    onClick={() => addFoodGroup('Untitled')}
+                >
+                    ADD GROUP
+                </button>
+            </div>
             {/* Food Item Modal */}
             {itemModalFoodUnit && (
                 <FoodItemModal
