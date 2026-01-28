@@ -2,7 +2,6 @@
     /* Layout */
     gap: 1rem;
     width: fit-content;
-    max-width: clamp(150px, 40vw, 200px);
     height: clamp(80px, 15vh, 110px);
     padding: 0 clamp(12px, 2vw, 20px);
     justify-content: space-between;
@@ -35,6 +34,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 0.8rem;
+    width: fit-content;
 }
 
 .food-info {
