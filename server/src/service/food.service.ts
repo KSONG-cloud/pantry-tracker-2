@@ -134,10 +134,19 @@ export const deletePantryByUser = async (
     return foodRepository.deletePantry(pantryId);
 };
 
-// Account/Food Group
+// Food Group
 export const getFoodGroupsByUser = async (
     userId: number
 ) => {
 
     return foodRepository.getFoodGroupsByUser(userId);
 };
+
+export const addFoodGroupsByUser = async (
+    userId: number,
+    group: FoodGroupType
+) => {
+    return foodRepository.addFoodGroupsByUser(userId, group);
+}
+
+// Account

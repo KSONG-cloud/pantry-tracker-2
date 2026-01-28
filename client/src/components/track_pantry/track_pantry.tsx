@@ -4,6 +4,9 @@ import { FoodGroup } from './group_of_food';
 import { FoodItemModal } from './food_item_modal';
 import { FoodUnit } from './one_unit_of_food';
 
+// CSS Styles
+import '@/styles/track_pantry/track_pantry.css';
+
 // Helpers
 import * as helper from '../../helpers/track_pantry.helper';
 
@@ -136,19 +139,54 @@ function TrackPantry() {
     const addFoodGroup = async (groupName: string) => {
         // Logic to add food group
 
-        // How many groups in foodGroups
-        const count = foodGroups.length;
-        setFoodGroups((prev) => [
-            ...prev,
-            {
-                id: tempIdCounter.current--,
-                name: groupName,
-                display_order: count + 1,
-                is_system: false,
-            },
-        ]);
+        // Capture previous snapshot
+        const previous = foodGroups;
 
-        // Send POST request to backend to add food group to account
+        // How many groups in foodGroups
+        const count = foodGroups.filter(
+            (group) => group.is_system === false
+        ).length;
+        const newFoodGroup = {
+            id: tempIdCounter.current--,
+            name: groupName,
+            display_order: count + 1,
+            is_system: false,
+        };
+        setFoodGroups((prev) => [...prev, newFoodGroup]);
+
+        // Send POST request to backend to add food group
+        try {
+            const res = await fetch(
+                `http://localhost:3001/users/${USERID}/foodgroups`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newFoodGroup),
+                }
+            );
+
+            // If POST request fail:
+            if (!res.ok) {
+                // Throw Error message on failure to update
+                throw new Error(
+                    `Request failed: ${res.status} ${res.statusText}`
+                );
+            } else {
+                const response = await res.json();
+                // Replace the optimistic item with the server response (which has the real ID)
+                setFoodGroups((prev) =>
+                    prev.map((group) =>
+                        group.id === newFoodGroup.id ? response : group
+                    )
+                );
+            }
+        } catch (err) {
+            // rollback
+            setFoodGroups(previous);
+            console.error(err);
+        }
     };
 
     // Change Food Item and Group Handlers

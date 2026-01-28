@@ -6,6 +6,7 @@ import {
     patchFoodItemPantry,
     deletePantryByUser,
     getFoodGroupsByUser,
+    addFoodGroupsByUser,
 } from '../controller/controller.js';
 
 const router = Router();
@@ -34,7 +35,9 @@ router.patch('/users/:userId/pantry/:pantryId', patchFoodItemPantry);
 router.patch('/users/:userId/pantry/:pantryId/delete', deletePantryByUser);
 
 // Food Groups Routes
+// GET
 router.get('/users/:userId/foodgroups', getFoodGroupsByUser);
-
+// POST
+router.post('/users/:userId/foodgroups', addFoodGroupsByUser);
 
 export { router };

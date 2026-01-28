@@ -116,13 +116,31 @@ export const getFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.userId);
 
-
         if (Number.isNaN(userId)) {
             res.status(400).json({ message: 'Invalid user id' });
             return;
         }
 
         const foodGroups = await foodService.getFoodGroupsByUser(userId);
+        res.status(200).json(foodGroups);
+    } catch (error) {
+        handleError(error, res);
+    }
+};
+
+export const addFoodGroupsByUser = async (req: Request, res: Response) => {
+    try {
+        console.log("I am in controller");
+        const userId = Number(req.params.userId);
+        const group = req.body;
+        
+
+        if (Number.isNaN(userId)) {
+            res.status(400).json({ message: 'Invalid user id' });
+            return;
+        }
+
+        const foodGroups = await foodService.addFoodGroupsByUser(userId, group);
         res.status(200).json(foodGroups);
     } catch (error) {
         handleError(error, res);

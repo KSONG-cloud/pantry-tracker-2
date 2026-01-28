@@ -16,7 +16,17 @@ export type FoodUnitType = {
     units: string | null;
 };
 
-export type FoodGroupType = Record<number, string>;
+export type FoodGroupRow = {
+    id: number;
+    user_id: number;
+    name: string;
+    display_order: number;
+    is_system: boolean;
+    created_at: Date;
+    updated_at: Date;
+};
+
+export type FoodGroupType = Partial<FoodGroupRow>
 
 export type PantryRow = Partial<{
     id: number;

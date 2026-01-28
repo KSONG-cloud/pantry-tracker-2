@@ -165,11 +165,7 @@ export const deletePantry = async (
     return result.rows[0];
 };
 
-// Account/Food Group
-type FoodGroupsRow = {
-    foodgroups: FoodGroupType;
-};
-
+// Food Group
 export const getFoodGroupsByUser = async (
     userId: number
 ) => {
@@ -191,3 +187,40 @@ export const getFoodGroupsByUser = async (
 
     return result.rows;
 };
+
+
+export const addFoodGroupsByUser = async (
+    userId: number,
+    group: FoodGroupType,
+) => {
+    const result: QueryResult<FoodGroupType> = await pool.query(
+        `INSERT INTO foodgroup (
+            user_id,
+            name,
+            display_order,
+            is_system
+            ) 
+        VALUES ($1, $2, $3, $4)
+        RETURNING 
+            id,
+            name,
+            display_order,
+            is_system`,
+        [
+            userId,
+            group.name,
+            group.display_order,
+            group.is_system
+        ]
+    );
+
+    if (!result.rows) {
+        throw new Error('Error');
+    }
+
+    return result.rows[0];
+
+};
+
+
+// Account

@@ -1,0 +1,29 @@
+.add-foodgroup-button {
+    width: 95vw;
+    height: 5vh;
+
+    border-radius: 31.5px;
+    border: 0;
+    background: #b7cfb1;
+    margin: 10px 15px 10px 45px;
+
+    /* Typography */
+    color: #fefffe;
+    text-align: center;
+    font-family: Inter;
+    font-size: 2vh;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 24px; /* 100% */
+    text-transform: uppercase;
+}
+
+.add-foodgroup-button:hover {
+    box-shadow: 0 2px #7b8b77;
+    transform: translateY(-1px);
+}
+
+.add-foodgroup-button:active {
+    box-shadow: 0 0;
+    transform: translateY(1px);
+}
