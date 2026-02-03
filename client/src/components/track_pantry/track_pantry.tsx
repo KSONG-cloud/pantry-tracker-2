@@ -1,5 +1,6 @@
 // APIs
 import * as pantryAPI from '../../api/pantry.api';
+import * as foodgroupAPI from '../../api/foodgroup.api';
 
 // Components
 import { AddItemModal } from './add_item_modal';
@@ -72,11 +73,8 @@ function TrackPantry() {
 
     const fetchFoodGroups = async () => {
         // Fetch food groups from backend
-        const res = await fetch(
-            `http://localhost:3001/users/${USERID}/foodgroups`
-        );
-        const resJSON = await res.json();
-        const sortedFoodGroups: FoodGroupType[] = [...resJSON].sort(
+        const res = await foodgroupAPI.getFoodGroups(USERID);
+        const sortedFoodGroups: FoodGroupType[] = [...res].sort(
             (a, b) => a.display_order - b.display_order
         );
         setFoodGroups(sortedFoodGroups);
@@ -130,44 +128,27 @@ function TrackPantry() {
 
         // How many groups in foodGroups
         const count = foodGroups.filter(
-            (group) => group.is_system === false
+            (group) => !group.is_system 
         ).length;
-        const newFoodGroup = {
+        const tempFoodGroup = {
             id: tempIdCounter.current--,
             name: groupName,
             display_order: count + 1,
             is_system: false,
         };
-        setFoodGroups((prev) => [...prev, newFoodGroup]);
+        setFoodGroups((prev) => [...prev, tempFoodGroup]);
 
         // Send POST request to backend to add food group
         try {
-            const res = await fetch(
-                `http://localhost:3001/users/${USERID}/foodgroups`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(newFoodGroup),
-                }
+            const newFoodGroup = await foodgroupAPI.addFoodGroup(
+                USERID,
+                tempFoodGroup
             );
-
-            // If POST request fail:
-            if (!res.ok) {
-                // Throw Error message on failure to update
-                throw new Error(
-                    `Request failed: ${res.status} ${res.statusText}`
-                );
-            } else {
-                const response = await res.json();
-                // Replace the optimistic item with the server response (which has the real ID)
-                setFoodGroups((prev) =>
-                    prev.map((group) =>
-                        group.id === newFoodGroup.id ? response : group
-                    )
-                );
-            }
+            setFoodGroups((prev) =>
+                prev.map((group) =>
+                    group.id === tempFoodGroup.id ? newFoodGroup : group
+                )
+            );
         } catch (err) {
             // rollback
             setFoodGroups(previous);
