@@ -39,6 +39,7 @@ function TrackPantry() {
     // Food Items and Groups State
     const [foodGroups, setFoodGroups] = useState<FoodGroupType[]>([]);
     const [groupMap, setGroupMap] = useState<Record<number, string>>({});
+    const [unassignedId, setUnassignedId] = useState<number>(-1);
     const [foodItems, setFoodItems] = useState<FoodUnitType[]>([]);
     const tempIdCounter = useRef(-1);
 
@@ -83,6 +84,13 @@ function TrackPantry() {
             map[group.id] = group.name;
         });
         setGroupMap(map);
+
+        // Find unassigned group id
+        const unassignedID = res.find(
+            (group) => group.is_system && group.name === 'Unassigned'
+        )?.id;
+        if (!unassignedID) throw new Error('Unassigned ID not found!');
+        setUnassignedId(unassignedID);
     };
 
     // add Food Item and Group Handlers

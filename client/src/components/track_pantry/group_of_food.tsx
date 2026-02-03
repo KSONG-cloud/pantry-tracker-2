@@ -22,6 +22,9 @@ interface FoodGroupProps {
     changeFoodItem: (edits: FoodEditType) => void;
     onFoodClick: (foodItem: FoodUnitType) => void;
     openAddItemModal: (groupId: number) => void;
+    editFoodGroup: (id: number, name: string) => void;
+    deleteFoodGroup: (id: number) => void;
+    is_system: boolean;
 }
 
 const FoodGroup = ({
@@ -31,6 +34,9 @@ const FoodGroup = ({
     changeFoodItem,
     onFoodClick,
     openAddItemModal,
+    editFoodGroup,
+    deleteFoodGroup,
+    is_system,
 }: FoodGroupProps) => {
     const { setNodeRef, isOver } = useDroppable({
         id: id,
@@ -51,6 +57,25 @@ const FoodGroup = ({
                 >
                     ADD ITEM
                 </button>
+                {!is_system && (
+                    <>
+                        <button
+                            className="foodgroup-edit-button"
+                            onClick={() => {
+                                editFoodGroup(id, name);
+                            }}
+                        >
+                            EDIT
+                        </button>
+                        <button
+                            className="foodgroup-delete-button"
+                            onClick={() => deleteFoodGroup(id)}
+                        >
+                            DELETE
+                        </button>
+                    </>
+                )}
+
                 <div className="foodgroup-line"></div>
             </div>
             <FoodList
