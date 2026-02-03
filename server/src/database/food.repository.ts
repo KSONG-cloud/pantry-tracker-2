@@ -166,9 +166,7 @@ export const deletePantry = async (
 };
 
 // Food Group
-export const getFoodGroupsByUser = async (
-    userId: number
-) => {
+export const getFoodGroupsByUser = async (userId: number) => {
     const result = await pool.query(
         `SELECT
             id,
@@ -178,8 +176,7 @@ export const getFoodGroupsByUser = async (
         FROM foodgroup
         WHERE user_id = $1`,
         [userId]
-    )
-
+    );
 
     if (!result.rows) {
         throw new Error('Account not found');
@@ -188,10 +185,9 @@ export const getFoodGroupsByUser = async (
     return result.rows;
 };
 
-
 export const addFoodGroupsByUser = async (
     userId: number,
-    group: FoodGroupType,
+    group: FoodGroupType
 ) => {
     const result: QueryResult<FoodGroupType> = await pool.query(
         `INSERT INTO foodgroup (
@@ -206,12 +202,15 @@ export const addFoodGroupsByUser = async (
             name,
             display_order,
             is_system`,
-        [
-            userId,
-            group.name,
-            group.display_order,
-            group.is_system
-        ]
+        [userId, group.name, group.display_order, group.is_system]
+    );
+
+    if (!result.rows) {
+        throw new Error('Error');
+    }
+
+    return result.rows[0];
+};
     );
 
     if (!result.rows) {

@@ -26,7 +26,7 @@ export type FoodGroupRow = {
     updated_at: Date;
 };
 
-export type FoodGroupType = Partial<FoodGroupRow>
+export type FoodGroupType = Partial<FoodGroupRow>;
 
 export type PantryRow = Partial<{
     id: number;

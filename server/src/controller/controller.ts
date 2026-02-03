@@ -91,7 +91,6 @@ export const patchFoodItemPantry = async (req: Request, res: Response) => {
     }
 };
 
-
 export const deletePantryByUser = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.userId);
@@ -109,9 +108,9 @@ export const deletePantryByUser = async (req: Request, res: Response) => {
     } catch (error) {
         handleError(error, res);
     }
-
 };
 
+// Food Groups
 export const getFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.userId);
@@ -130,10 +129,8 @@ export const getFoodGroupsByUser = async (req: Request, res: Response) => {
 
 export const addFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
-        console.log("I am in controller");
         const userId = Number(req.params.userId);
         const group = req.body;
-        
 
         if (Number.isNaN(userId)) {
             res.status(400).json({ message: 'Invalid user id' });
