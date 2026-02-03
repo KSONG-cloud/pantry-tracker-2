@@ -146,6 +146,24 @@ export const addFoodGroupsByUser = async (
     group: FoodGroupType
 ) => {
     return foodRepository.addFoodGroupsByUser(userId, group);
-}
+};
+
+export const deleteFoodGroupsByUser = async (
+    userId: number,
+    groupId: number
+) => {
+    // Get delete display_order
+    const order = await foodRepository.getOrderForFoodGroups(groupId);
+    // Delete the food group
+    await foodRepository.deleteFoodGroups(groupId);
+
+    // Shift down remaining groups
+    await foodRepository.reorderForDeleteFoodGroups(userId, order);
+
+    // Fetch newly updated food groups
+    const group = await getFoodGroupsByUser(userId);
+
+    return group;
+};
 
 // Account

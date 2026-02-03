@@ -149,9 +149,7 @@ export const patchFoodItemPantry = async (
     return result.rows[0];
 };
 
-export const deletePantry = async (
-    pantryId: number
-) => {
+export const deletePantry = async (pantryId: number) => {
     const result = await pool.query(
         `UPDATE pantry
         SET removed = true
@@ -211,6 +209,17 @@ export const addFoodGroupsByUser = async (
 
     return result.rows[0];
 };
+
+export const patchFoodGroups = async (groupId: number) => {
+    const result: QueryResult = await pool.query(
+        `DELETE FROM foodgroup 
+        WHERE id = $1
+        RETURNING 
+            id,
+            name,
+            display_order,
+            is_system`,
+        [groupId]
     );
 
     if (!result.rows) {
@@ -218,8 +227,66 @@ export const addFoodGroupsByUser = async (
     }
 
     return result.rows[0];
-
 };
 
+export const deleteFoodGroups = async (groupId: number) => {
+    const result: QueryResult = await pool.query(
+        `DELETE FROM foodgroup 
+        WHERE id = $1
+        RETURNING 
+            id,
+            name,
+            display_order,
+            is_system`,
+        [groupId]
+    );
+
+    if (!result.rows) {
+        throw new Error('Error');
+    }
+
+    return result.rows[0];
+};
+
+export const getOrderForFoodGroups = async (
+    groupId: number
+): Promise<number> => {
+    const result: QueryResult = await pool.query(
+        `SELECT display_order
+        FROM foodgroup
+        WHERE id = $1`,
+        [groupId]
+    );
+
+    if (!result.rows) {
+        throw new Error(
+            `Cannot retrieve display_order for group with ID ${groupId}`
+        );
+    }
+
+    return result.rows[0].display_order;
+};
+
+export const reorderForDeleteFoodGroups = async (
+    userId: number,
+    groupOrder: number
+) => {
+    const result: QueryResult = await pool.query(
+        `UPDATE foodgroup
+        SET display_order = display_order - 1
+        WHERE user_id = $1
+        AND display_order > $2
+        AND is_system = false`,
+        [userId, groupOrder]
+    );
+
+    if (!result) {
+        throw new Error(
+            `Cannot reorder display_order for user with ID ${userId}`
+        );
+    }
+
+    return result;
+};
 
 // Account

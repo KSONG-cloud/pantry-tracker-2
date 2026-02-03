@@ -143,3 +143,27 @@ export const addFoodGroupsByUser = async (req: Request, res: Response) => {
         handleError(error, res);
     }
 };
+
+export const deleteFoodGroupsByUser = async (req: Request, res: Response) => {
+    try {
+        const userId = Number(req.params.userId);
+        const groupId = Number(req.params.foodgroupId);
+
+        if (Number.isNaN(userId)) {
+            res.status(400).json({ message: 'Invalid user id' });
+            return;
+        }
+        if (Number.isNaN(groupId)) {
+            res.status(400).json({ message: 'Invalid group id' });
+            return;
+        }
+
+        const foodGroups = await foodService.deleteFoodGroupsByUser(
+            userId,
+            groupId
+        );
+        res.status(200).json(foodGroups);
+    } catch (error) {
+        handleError(error, res);
+    }
+};

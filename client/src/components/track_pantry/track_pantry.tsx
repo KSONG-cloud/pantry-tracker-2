@@ -231,7 +231,80 @@ function TrackPantry() {
         }
     };
 
-    const deleteFoodGroup = async (foodGroupId: number) => {};
+    const deleteFoodGroup = async (foodGroupId: number) => {
+        // Can't delete Unassigned
+        if (foodGroupId === unassignedId) {
+            throw new Error('Cannot delete unassigned');
+        }
+
+        // Capture previous snapshot
+        const previousGroup = foodGroups;
+        const previousFood = foodItems;
+
+        // Isolate the food group getting removed
+        const removedFoodGroup = foodGroups.find(
+            (group) => group.id === foodGroupId
+        );
+
+        if (!removedFoodGroup) {
+            throw new Error('Food Group not found.');
+        }
+
+        // Handle food items in the removed food groups - put them all in Unassigned
+        const itemsToMove = foodItems.filter(
+            (item) => item.foodgroup_id === removedFoodGroup.id
+        );
+
+        // React state update
+        setFoodItems((prev) =>
+            prev.map((item) =>
+                item.foodgroup_id === removedFoodGroup.id
+                    ? { ...item, foodgroup_id: unassignedId }
+                    : item
+            )
+        );
+
+        // Removed group
+        setFoodGroups((prev) =>
+            prev.filter((group) => group.id !== foodGroupId)
+        );
+
+        // Reset display_order
+        setFoodGroups((prev) =>
+            prev.map((group) =>
+                !group.is_system &&
+                group.display_order >= removedFoodGroup.display_order
+                    ? { ...group, display_order: group.display_order - 1 }
+                    : group
+            )
+        );
+
+        try {
+            // API updates
+            // API: Move items to unassigned
+            await Promise.all(
+                itemsToMove.map((item) =>
+                    pantryAPI.changeFoodItem(USERID, {
+                        id: item.id,
+                        foodgroup_id: unassignedId,
+                    })
+                )
+            );
+
+            // API: Delete food group (includes reorder)
+            const newFoodGroups = await foodgroupAPI.deleteFoodGroup(
+                USERID,
+                removedFoodGroup.id
+            );
+            // Update state with current data from database after delete
+            setFoodGroups(newFoodGroups);
+        } catch (err) {
+            // rollback
+            setFoodItems(previousFood);
+            setFoodGroups(previousGroup);
+            console.error(err);
+        }
+    };
 
     // Food Item Modal Handlers
     const openItemModal = (food: FoodUnitType) => {
@@ -340,6 +413,8 @@ function TrackPantry() {
                                     editFoodGroup={editFoodGroup}
                                     // tempGroupName={tempGroupName}
                                     // setTempGroupName={setTempGroupName}
+                                    deleteFoodGroup={deleteFoodGroup}
+                                    is_system={foodGroup.is_system}
                                 />
                             );
                         })}

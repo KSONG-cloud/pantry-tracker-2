@@ -7,6 +7,7 @@ import {
     deletePantryByUser,
     getFoodGroupsByUser,
     addFoodGroupsByUser,
+    deleteFoodGroupsByUser,
 } from '../controller/controller.js';
 
 const router = Router();
@@ -39,5 +40,12 @@ router.patch('/users/:userId/pantry/:pantryId/delete', deletePantryByUser);
 router.get('/users/:userId/foodgroups', getFoodGroupsByUser);
 // POST
 router.post('/users/:userId/foodgroups', addFoodGroupsByUser);
+// PATCH
+
+// DELETE
+router.delete(
+    '/users/:userId/foodgroups/:foodgroupId/delete',
+    deleteFoodGroupsByUser
+);
 
 export { router };
