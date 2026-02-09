@@ -44,7 +44,8 @@
 
 .food-name,
 .food-dateinfo,
-.food-quantity {
+.food-quantity,
+.food-datetooltip {
     font-family: Inter;
 }
 
@@ -66,6 +67,38 @@
     color: #bcbcbc;
     font-size: 12px;
 }
+
+.food-datewrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.food-datetooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+
+  background: #fefffe;
+  border: 1px solid #bcbcbc;
+  color: rgb(0, 0, 0);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+}
+
+.food-datewrapper:hover .food-datetooltip {
+  opacity: 1;
+}
+
+
 
 .food-quantity {
     color: #000;

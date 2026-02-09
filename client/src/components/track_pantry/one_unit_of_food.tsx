@@ -7,9 +7,18 @@ import MinusIcon from '../../assets/icons/minus.svg';
 
 // Types
 import type { FoodUnitType, FoodEditType } from '../../types/food';
+import type { FreshnessLevel } from '../../helpers/time.helper';
 
 // Dnd Kit
 import { useDraggable } from '@dnd-kit/core';
+
+// Helpers
+import {
+    formatRelativeDate,
+    getFreshnessLevel,
+    freshnessColors,
+    formatAbsoluteDate,
+} from '../../helpers/time.helper';
 
 interface FoodUnitProps {
     food: FoodUnitType;
@@ -40,14 +49,25 @@ const FoodUnit = ({
         return `${label}: ${newDate.toLocaleDateString('en-AU', { dateStyle: 'short' })}`;
     };
 
-    let dateText: string;
+    let dateText: string = '';
+    let freshnessLevel: FreshnessLevel;
+    let dateActual: string = '';
 
     if (food.expiry_date) {
-        dateText = formatDate('Exp', food.expiry_date);
+        dateText = formatRelativeDate(new Date(food.expiry_date), 'expiry');
+        freshnessLevel = getFreshnessLevel(new Date(food.expiry_date), 'expiry');
+        dateActual = formatAbsoluteDate(new Date(food.expiry_date), 'expiry');
     } else if (food.bestbefore_date) {
-        dateText = formatDate('Best Before', food.bestbefore_date);
+        dateText = formatRelativeDate(
+            new Date(food.bestbefore_date),
+            'bestbefore'
+        );
+        freshnessLevel = getFreshnessLevel(new Date(food.bestbefore_date), 'bestbefore');
+        dateActual = formatAbsoluteDate(new Date(food.bestbefore_date), 'bestbefore');
     } else {
-        dateText = formatDate('Added On', food.added_date);
+        dateText = formatRelativeDate(new Date(food.added_date), 'added');
+        freshnessLevel = getFreshnessLevel(new Date(food.added_date), 'added');
+        dateActual = formatAbsoluteDate(new Date(food.added_date), 'added');
     }
 
     // Dnd
@@ -81,8 +101,19 @@ const FoodUnit = ({
             <div className="food-content">
                 <div className="food-icon">🥕</div>
                 <div>
-                    <div className="food-name">{food.food_name}</div>
-                    <div className="food-dateinfo">{dateText}</div>
+                    <div className="food-name" style={{ color: freshnessColors[freshnessLevel] }}>{food.food_name}</div>
+                    <div className="food-datewrapper">
+                        <div
+                            // title="Expiring on 23 Dec 2026"
+                            className="food-dateinfo"
+                            style={{ color: freshnessColors[freshnessLevel] }}
+                        >
+                            {dateText}
+                        </div>
+                        <div className="food-datetooltip">
+                            {dateActual}
+                        </div>
+                    </div>
                 </div>
                 <div
                     className="food-unittoggle"
