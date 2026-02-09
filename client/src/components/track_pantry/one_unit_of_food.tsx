@@ -55,15 +55,24 @@ const FoodUnit = ({
 
     if (food.expiry_date) {
         dateText = formatRelativeDate(new Date(food.expiry_date), 'expiry');
-        freshnessLevel = getFreshnessLevel(new Date(food.expiry_date), 'expiry');
+        freshnessLevel = getFreshnessLevel(
+            new Date(food.expiry_date),
+            'expiry'
+        );
         dateActual = formatAbsoluteDate(new Date(food.expiry_date), 'expiry');
     } else if (food.bestbefore_date) {
         dateText = formatRelativeDate(
             new Date(food.bestbefore_date),
             'bestbefore'
         );
-        freshnessLevel = getFreshnessLevel(new Date(food.bestbefore_date), 'bestbefore');
-        dateActual = formatAbsoluteDate(new Date(food.bestbefore_date), 'bestbefore');
+        freshnessLevel = getFreshnessLevel(
+            new Date(food.bestbefore_date),
+            'bestbefore'
+        );
+        dateActual = formatAbsoluteDate(
+            new Date(food.bestbefore_date),
+            'bestbefore'
+        );
     } else {
         dateText = formatRelativeDate(new Date(food.added_date), 'added');
         freshnessLevel = getFreshnessLevel(new Date(food.added_date), 'added');
@@ -101,7 +110,12 @@ const FoodUnit = ({
             <div className="food-content">
                 <div className="food-icon">🥕</div>
                 <div>
-                    <div className="food-name" style={{ color: freshnessColors[freshnessLevel] }}>{food.food_name}</div>
+                    <div
+                        className="food-name"
+                        style={{ color: freshnessColors[freshnessLevel] }}
+                    >
+                        {food.food_name}
+                    </div>
                     <div className="food-datewrapper">
                         <div
                             // title="Expiring on 23 Dec 2026"
@@ -110,9 +124,7 @@ const FoodUnit = ({
                         >
                             {dateText}
                         </div>
-                        <div className="food-datetooltip">
-                            {dateActual}
-                        </div>
+                        <div className="food-datetooltip">{dateActual}</div>
                     </div>
                 </div>
                 <div

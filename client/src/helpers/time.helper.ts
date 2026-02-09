@@ -1,5 +1,5 @@
 // Imports
-import { format } from "date-fns";
+import { format } from 'date-fns';
 
 // Types
 type TimeDiff = {
@@ -34,17 +34,7 @@ export const formatAbsoluteDate = (
     date: Date,
     type: 'expiry' | 'bestbefore' | 'added'
 ) => {
-    // const label =
-    //     type === 'expiry'
-    //         ? 'Expiring on'
-    //         : type === 'bestbefore'
-    //           ? 'Best before'
-    //           : 'Added on';
-
-    // return `${label} ${format(date, 'dd MMM yyyy')}`;
-	    
-	const diff = getTimeDiff(date);
-	let label = '';
+    const diff = getTimeDiff(date);
 
     // If we only have Added Date
     if (type === 'added') {
@@ -54,11 +44,9 @@ export const formatAbsoluteDate = (
     // If we do have expiry or best before date and it has EXPIRED
     if (diff.isPast) {
         const prefix =
-            type === 'expiry'
-                ? 'Expired on'
-                : 'Best before passed on';
+            type === 'expiry' ? 'Expired on' : 'Best before passed on';
 
-        return `${prefix} ${format(date, 'dd MMM yyyy')}` ;
+        return `${prefix} ${format(date, 'dd MMM yyyy')}`;
     }
 
     const prefix = type === 'expiry' ? 'Expires on' : 'Best before on';
@@ -126,10 +114,9 @@ export const getFreshnessLevel = (
         if (diff.days <= 14) return 'ok';
         return 'fresh';
     }
-	if (type === 'bestbefore') {
-
-		if (diff.isPast && diff.days < -30) return "expired";
-		if (diff.isPast && diff.days <= -14) return "critical";
+    if (type === 'bestbefore') {
+        if (diff.isPast && diff.days < -30) return 'expired';
+        if (diff.isPast && diff.days <= -14) return 'critical';
         if (diff.isPast) return 'warning';
         if (diff.days <= 7) return 'ok';
         return 'fresh';
