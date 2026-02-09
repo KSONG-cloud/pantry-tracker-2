@@ -150,5 +150,3 @@ export const freshnessColors: Record<FreshnessLevel, string> = {
     ok: '#bacc16', // yellow-green
     fresh: '#16A34A', // green
 };
-
-// TODO: Add a hover and display actual date

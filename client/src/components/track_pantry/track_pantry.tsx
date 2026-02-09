@@ -135,9 +135,7 @@ function TrackPantry() {
         const previous = foodGroups;
 
         // How many groups in foodGroups
-        const count = foodGroups.filter(
-            (group) => !group.is_system 
-        ).length;
+        const count = foodGroups.filter((group) => !group.is_system).length;
         const tempFoodGroup = {
             id: tempIdCounter.current--,
             name: groupName,
