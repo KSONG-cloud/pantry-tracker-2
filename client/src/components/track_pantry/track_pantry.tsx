@@ -53,6 +53,12 @@ function TrackPantry() {
     const [freshnessFilter, setFreshnessFilter] = useState<
         freshness.FreshnessLevel[]
     >(freshness.ALL_FRESHNESS);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+    const [sortOption, setSortOption] =
+        useState<sortandfilter.SortOption>('expiry');
+    const [sortDirection, setSortDirection] =
+        useState<sortandfilter.SortDirection>('asc');
 
     // Food Item Modal State
     const [itemModalFoodUnit, setItemModalFoodUnit] =
@@ -370,6 +376,18 @@ function TrackPantry() {
         fetchFoodGroups();
         fetchFoodItems();
     }, []);
+    // Debounce for large lists
+    useEffect(() => {
+        const useDebounce = foodItems.length > 200; // dynamic check
+
+        if (!useDebounce) {
+            setDebouncedQuery(searchQuery); // instant
+            return;
+        }
+
+        const handler = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+        return () => clearTimeout(handler);
+    }, [searchQuery, foodItems.length]);
 
     // Sort and filter foods
     const visibleFood = useMemo(() => {
@@ -379,13 +397,13 @@ function TrackPantry() {
         result = sortandfilter.applyFreshnessFilter(result, freshnessFilter);
 
         // SEARCH
-        // result = sortandfilter.applySearch(result, searchQuery);
+        result = sortandfilter.applySearch(result, searchQuery);
 
         // SORT
         // result = sortandfilter.applySort(result, sortOption);
 
         return result;
-    }, [foodItems, freshnessFilter, searchQuery, sortOption]);
+    }, [foodItems, freshnessFilter, searchQuery, debouncedQuery, sortOption, sortDirection]);
 
     // Group food items by their foodgroup_id
     const groupFoodItems = useMemo(() => {
@@ -425,32 +443,49 @@ function TrackPantry() {
     return (
         <>
             <div className="main-top">
-                {freshness.ALL_FRESHNESS.map((level) => {
-                    const isSelected = freshnessFilter.includes(level);
-                    const dotColour = isSelected
-                        ? freshness.freshnessColors[level]
-                        : 'gray';
-                    const textColour = isSelected ? 'black' : 'gray';
+                <div className="filter freshness">
+                    {freshness.ALL_FRESHNESS.map((level) => {
+                        const isSelected = freshnessFilter.includes(level);
+                        const dotColour = isSelected
+                            ? freshness.freshnessColors[level]
+                            : 'gray';
+                        const textColour = isSelected ? 'black' : 'gray';
 
-                    return (
-                        <button
-                            key={level}
-                            onClick={() => toggleFreshness(level)}
-                            className={`toggle freshness ${level}`}
-                            style={{
-                                borderColor: isSelected
-                                    ? dotColour
-                                    : 'lightgray',
-                            }}
-                        >
-                            <span
-                                className="word freshness ${level}"
-                                style={{ color: dotColour, fontSize: '40px' }}
-                            >·</span>
-                            <span style={{ color: textColour }}>{level}</span>
-                        </button>
-                    );
-                })}
+                        return (
+                            <button
+                                key={level}
+                                onClick={() => toggleFreshness(level)}
+                                className={`toggle freshness ${level}`}
+                                style={{
+                                    borderColor: isSelected
+                                        ? dotColour
+                                        : 'lightgray',
+                                }}
+                            >
+                                <span
+                                    className="word freshness ${level}"
+                                    style={{
+                                        color: dotColour,
+                                        fontSize: '40px',
+                                    }}
+                                >
+                                    ·
+                                </span>
+                                <span style={{ color: textColour }}>
+                                    {level}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+                <div className="filter search">
+                    <input
+                        type="text"
+                        placeholder="Search foods..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
             </div>
             <div className="main-content">
                 <DndContext
