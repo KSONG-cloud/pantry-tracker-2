@@ -1,9 +1,8 @@
 // CSS
 import '../../styles/track_pantry/one_unit_of_food.css';
 
-// Assets
-import PlusIcon from '../../assets/icons/plus.svg';
-import MinusIcon from '../../assets/icons/minus.svg';
+// Lucide
+import { Plus, Minus } from 'lucide-react';
 
 // Types
 import type { FoodUnitType, FoodEditType } from '../../types/food';
@@ -143,7 +142,7 @@ const FoodUnit = ({
                             handleChange(1);
                         }}
                     >
-                        <img src={PlusIcon} alt="Plus" />
+                        <Plus className='food-addbutton-icon'/>
                     </button>
                     <div className="food-quantity">
                         {Number(food.quantity) || 0}
@@ -155,7 +154,7 @@ const FoodUnit = ({
                             handleChange(-1);
                         }}
                     >
-                        <img src={MinusIcon} alt="Minus" />
+                        <Minus className='food-minusbutton-icon'/>
                     </button>
                 </div>
             </div>

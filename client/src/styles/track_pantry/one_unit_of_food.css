@@ -134,11 +134,13 @@
     /* Style */
     border: none;
     background-color: #fefffe;
+    color: #d9d9d9;
 }
 
-.food-addbutton svg {
-    height: 100%;
-    width: 100%;
+.food-addbutton-icon, .food-minusbutton-icon {
+    height: 80%;
+    width: 80%;
+    color: #d9d9d9;
 }
 
 .food-addbutton:hover,
