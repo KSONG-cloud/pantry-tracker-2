@@ -53,9 +53,9 @@ export const getFreshnessLevel = (
 
 // Colour Palette for Freshness
 export const freshnessColors: Record<FreshnessLevel, string> = {
-    expired: '#c2c2c2', // dark grey / black
+    expired: '#8d8d8d', // dark grey / black
     critical: '#DC2626', // bright red
     warning: '#F59E0B', // yellow
-    ok: '#bacc16', // yellow-green
+    ok: '#9eaf00', // yellow-green
     fresh: '#16A34A', // green
 };

@@ -16,6 +16,9 @@ import * as helper from '../../helpers/track_pantry.helper';
 import * as freshness from '../../helpers/freshness.helper';
 import * as sortandfilter from '../../helpers/sortandfilter.helper';
 
+// Lucide
+import { Plus } from 'lucide-react';
+
 // React stuff
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -455,7 +458,7 @@ function TrackPantry() {
                         const isSelected = freshnessFilter.includes(level);
                         const dotColour = isSelected
                             ? freshness.freshnessColors[level]
-                            : 'gray';
+                            : 'lightgray';
                         const textColour = isSelected ? 'black' : 'gray';
 
                         return (
@@ -470,15 +473,15 @@ function TrackPantry() {
                                 }}
                             >
                                 <span
-                                    className="word freshness ${level}"
+                                    className={`freshness-dot ${level}`}
                                     style={{
-                                        color: dotColour,
-                                        fontSize: '40px',
+                                        background: dotColour,
                                     }}
+                                ></span>
+                                <span
+                                    className={`freshness-text ${level}`}
+                                    style={{ color: textColour }}
                                 >
-                                    ·
-                                </span>
-                                <span style={{ color: textColour }}>
                                     {level}
                                 </span>
                             </button>
@@ -487,14 +490,26 @@ function TrackPantry() {
                 </div>
                 <div className="filter search">
                     <input
+                        id="search-bar-food"
                         type="text"
                         placeholder="Search foods..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
+                    <button
+                        className="add-item-button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            openAddItemModal(unassignedId);
+                        }}
+                    >
+                        <Plus className='add-item-button-icon' />
+                    </button>
                 </div>
                 <div className="filter sort">
+                    <span className="sort-words">SORT BY</span>
                     <select
+                        id="sort-select"
                         value={sortOption}
                         onChange={(e) =>
                             setSortOption(
@@ -504,7 +519,11 @@ function TrackPantry() {
                     >
                         {Object.entries(sortandfilter.SORTING_LABELS).map(
                             ([value, label]) => (
-                                <option key={value} value={value}>
+                                <option
+                                    className={`sort-select-option ${value}`}
+                                    key={value}
+                                    value={value}
+                                >
                                     {label}
                                 </option>
                             )

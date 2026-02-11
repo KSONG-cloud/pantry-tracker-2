@@ -11,9 +11,9 @@ export type SortOption = 'expiry_bestbefore' | 'alpha' | 'added' | 'quantity';
 export type SortDirection = 'asc' | 'desc';
 
 export const SORTING_LABELS: Record<SortOption, string> = {
-    expiry_bestbefore: 'Expiry/Best Before Date',
-    alpha: 'A-Z',
-    added: 'Added Date',
+    expiry_bestbefore: 'Expiry',
+    alpha: 'A - Z',
+    added: 'Added On',
     quantity: 'Quantity',
 };
 
