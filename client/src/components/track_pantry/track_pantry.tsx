@@ -56,7 +56,7 @@ function TrackPantry() {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [debouncedQuery, setDebouncedQuery] = useState<string>('');
     const [sortOption, setSortOption] =
-        useState<sortandfilter.SortOption>('expiry');
+        useState<sortandfilter.SortOption>('expiry_bestbefore');
     const [sortDirection, setSortDirection] =
         useState<sortandfilter.SortDirection>('asc');
 
@@ -400,10 +400,17 @@ function TrackPantry() {
         result = sortandfilter.applySearch(result, searchQuery);
 
         // SORT
-        // result = sortandfilter.applySort(result, sortOption);
+        result = sortandfilter.applySort(result, sortOption, sortDirection);
 
         return result;
-    }, [foodItems, freshnessFilter, searchQuery, debouncedQuery, sortOption, sortDirection]);
+    }, [
+        foodItems,
+        freshnessFilter,
+        searchQuery,
+        debouncedQuery,
+        sortOption,
+        sortDirection,
+    ]);
 
     // Group food items by their foodgroup_id
     const groupFoodItems = useMemo(() => {
@@ -485,6 +492,43 @@ function TrackPantry() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
+                </div>
+                <div className="filter sort">
+                    <select
+                        value={sortOption}
+                        onChange={(e) =>
+                            setSortOption(
+                                e.target.value as sortandfilter.SortOption
+                            )
+                        }
+                    >
+                        {Object.entries(sortandfilter.SORTING_LABELS).map(
+                            ([value, label]) => (
+                                <option key={value} value={value}>
+                                    {label}
+                                </option>
+                            )
+                        )}
+                    </select>
+                    <div
+                        className="sort-toggle"
+                        onClick={() => {
+                            setSortDirection((prev) =>
+                                prev === 'asc' ? 'desc' : 'asc'
+                            );
+                        }}
+                    >
+                        <span
+                            className={`arrow-up ${sortDirection === 'asc' ? 'active' : 'inactive'}`}
+                        >
+                            ▲
+                        </span>
+                        <span
+                            className={`arrow-down ${sortDirection === 'desc' ? 'active' : 'inactive'}`}
+                        >
+                            ▼
+                        </span>
+                    </div>
                 </div>
             </div>
             <div className="main-content">
