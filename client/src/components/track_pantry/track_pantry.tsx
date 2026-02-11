@@ -13,6 +13,8 @@ import '@/styles/track_pantry/track_pantry.css';
 
 // Helpers
 import * as helper from '../../helpers/track_pantry.helper';
+import * as freshness from '../../helpers/freshness.helper';
+import * as sortandfilter from '../../helpers/sortandfilter.helper';
 
 // React stuff
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -46,6 +48,11 @@ function TrackPantry() {
     // General State
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+
+    // Filter and Sort States
+    const [freshnessFilter, setFreshnessFilter] = useState<
+        freshness.FreshnessLevel[]
+    >(freshness.ALL_FRESHNESS);
 
     // Food Item Modal State
     const [itemModalFoodUnit, setItemModalFoodUnit] =
@@ -344,6 +351,16 @@ function TrackPantry() {
         setAddItemModalOpen(false);
     };
 
+    // Handlers for toggling freshness
+    const toggleFreshness = (level: freshness.FreshnessLevel) => {
+        setFreshnessFilter(
+            (prev) =>
+                prev.includes(level)
+                    ? prev.filter((l) => l !== level) // unselect
+                    : [...prev, level] // select
+        );
+    };
+
     // Query for food data from pantry table for user_id (Data is grouped by foodgroup_id in backend)
     // Removed = false
     // Remember to join with food table to get food names
@@ -354,15 +371,31 @@ function TrackPantry() {
         fetchFoodItems();
     }, []);
 
+    // Sort and filter foods
+    const visibleFood = useMemo(() => {
+        let result = foodItems;
+
+        // FILTER
+        result = sortandfilter.applyFreshnessFilter(result, freshnessFilter);
+
+        // SEARCH
+        // result = sortandfilter.applySearch(result, searchQuery);
+
+        // SORT
+        // result = sortandfilter.applySort(result, sortOption);
+
+        return result;
+    }, [foodItems, freshnessFilter, searchQuery, sortOption]);
+
     // Group food items by their foodgroup_id
     const groupFoodItems = useMemo(() => {
         const groupedItems: Record<number, FoodUnitType[]> = {};
-        foodItems.forEach((item) => {
+        visibleFood.forEach((item) => {
             const groupId = item.foodgroup_id;
             groupedItems[groupId] = [...(groupedItems[groupId] || []), item];
         });
         return groupedItems;
-    }, [foodItems, foodGroups]);
+    }, [foodItems, foodGroups, visibleFood]);
 
     // Dnd Kit Handlers
     const handleDragStart = (event: DragStartEvent) => {
@@ -391,6 +424,34 @@ function TrackPantry() {
 
     return (
         <>
+            <div className="main-top">
+                {freshness.ALL_FRESHNESS.map((level) => {
+                    const isSelected = freshnessFilter.includes(level);
+                    const dotColour = isSelected
+                        ? freshness.freshnessColors[level]
+                        : 'gray';
+                    const textColour = isSelected ? 'black' : 'gray';
+
+                    return (
+                        <button
+                            key={level}
+                            onClick={() => toggleFreshness(level)}
+                            className={`toggle freshness ${level}`}
+                            style={{
+                                borderColor: isSelected
+                                    ? dotColour
+                                    : 'lightgray',
+                            }}
+                        >
+                            <span
+                                className="word freshness ${level}"
+                                style={{ color: dotColour, fontSize: '40px' }}
+                            >·</span>
+                            <span style={{ color: textColour }}>{level}</span>
+                        </button>
+                    );
+                })}
+            </div>
             <div className="main-content">
                 <DndContext
                     onDragStart={handleDragStart}

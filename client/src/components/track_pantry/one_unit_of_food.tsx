@@ -7,7 +7,7 @@ import MinusIcon from '../../assets/icons/minus.svg';
 
 // Types
 import type { FoodUnitType, FoodEditType } from '../../types/food';
-import type { FreshnessLevel } from '../../helpers/time.helper';
+import type { FreshnessLevel } from '../../helpers/freshness.helper';
 
 // Dnd Kit
 import { useDraggable } from '@dnd-kit/core';
@@ -15,10 +15,13 @@ import { useDraggable } from '@dnd-kit/core';
 // Helpers
 import {
     formatRelativeDate,
-    getFreshnessLevel,
-    freshnessColors,
     formatAbsoluteDate,
 } from '../../helpers/time.helper';
+
+import {
+    getFreshnessLevel,
+    freshnessColors,
+} from '../../helpers/freshness.helper';
 
 interface FoodUnitProps {
     food: FoodUnitType;
