@@ -148,6 +148,42 @@ export const addFoodGroupsByUser = async (
     return foodRepository.addFoodGroupsByUser(userId, group);
 };
 
+export const patchFoodGroupsByUser = async (
+    userId: number,
+    groupId: number,
+    changes: Partial<FoodGroupType>
+) => {
+    const keys: string[] = Object.keys(changes);
+    const setClause = keys.map((k, idx) => `${k} = $${idx + 1}`).join(', ');
+    const values = Object.values(changes);
+
+    // Update food group
+    await foodRepository.patchFoodGroups(
+        groupId,
+        setClause,
+        values,
+        keys.length
+    );
+
+    // Fetch newly updated food groups
+    const group = await getFoodGroupsByUser(userId);
+
+    return group;
+};
+
+export const reorderFoodGroupsByUser = async (
+    userId: number,
+    reorder: { id: number; display_order: number }[]
+) => {
+    // Reorder food groups
+    await foodRepository.reorderFoodGroups(reorder);
+
+    // Fetch newly updated food groups
+    const group = await getFoodGroupsByUser(userId);
+
+    return group;
+};
+
 export const deleteFoodGroupsByUser = async (
     userId: number,
     groupId: number

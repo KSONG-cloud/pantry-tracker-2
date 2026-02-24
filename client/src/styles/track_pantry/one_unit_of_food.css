@@ -137,7 +137,8 @@
     color: #d9d9d9;
 }
 
-.food-addbutton-icon, .food-minusbutton-icon {
+.food-addbutton-icon,
+.food-minusbutton-icon {
     height: 80%;
     width: 80%;
     color: #d9d9d9;
@@ -147,6 +148,7 @@
 .food-minusbutton:hover {
     box-shadow: 0 2px #c8c8c8;
     transform: translateY(-1px);
+    cursor: pointer;
 }
 
 .food-addbutton:active,

@@ -28,7 +28,7 @@
     color: #000;
 }
 
-.foodgroup-add-button {
+.foodgroup-additem-button {
     padding: 5px 10px;
     background-color: #b7cfb1;
     color: #fefffe;
@@ -42,18 +42,36 @@
     font-weight: 600;
 }
 
-.foodgroup-add-button:hover {
+.foodgroup-additem-button:hover {
     box-shadow: 0 2px #7b8b77;
     transform: translateY(-1px);
 }
 
-.foodgroup-add-button:active {
+.foodgroup-additem-button:active {
     box-shadow: 0 0;
     transform: translateY(1px);
+}
+
+.foodgroup-edit-button:hover,
+.foodgroup-delete-button:hover {
+    cursor: pointer;
 }
 
 .foodgroup-line {
     flex-grow: 1;
     height: 1px;
     background-color: #d9d9d9;
+}
+
+.foodgroup.arrow {
+    font-size: 20px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    color: #d9d9d9;
+}
+
+.foodgroup.arrow:hover {
+    color: gray;
+    cursor: pointer;
 }

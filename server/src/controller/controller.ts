@@ -144,6 +144,51 @@ export const addFoodGroupsByUser = async (req: Request, res: Response) => {
     }
 };
 
+export const patchFoodGroupsByUser = async (req: Request, res: Response) => {
+    try {
+        const userId = Number(req.params.userId);
+        const groupId = Number(req.params.foodgroupId);
+        const changes = req.body;
+
+        if (Number.isNaN(userId) || Number.isNaN(groupId)) {
+            res.status(400).json({ message: 'Invalid user id' });
+            return;
+        }
+
+        const foodGroups = await foodService.patchFoodGroupsByUser(
+            userId,
+            groupId,
+            changes
+        );
+        res.status(200).json(foodGroups);
+    } catch (error) {
+        handleError(error, res);
+    }
+};
+
+export const reorderFoodGroupsByUser = async (req: Request, res: Response) => {
+    console.log('reorderFoodGroupsByUser called');
+    try {
+        const userId = Number(req.params.userId);
+        const reorder = req.body;
+
+        console.log('Reorder request:', { userId, reorder });
+
+        if (Number.isNaN(userId)) {
+            res.status(400).json({ message: 'Invalid user id' });
+            return;
+        }
+
+        const foodGroups = await foodService.reorderFoodGroupsByUser(
+            userId,
+            reorder
+        );
+        res.status(200).json(foodGroups);
+    } catch (error) {
+        handleError(error, res);
+    }
+};
+
 export const deleteFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.userId);

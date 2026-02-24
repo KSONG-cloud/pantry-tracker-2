@@ -235,6 +235,109 @@ function TrackPantry() {
         setTempGroupName(name);
     };
 
+    const saveFoodGroup = async (id: number) => {
+        // Capture previous snapshot
+        const previous = foodGroups;
+
+        // Optimistically update UI
+        setFoodGroups((prev) =>
+            prev.map((group) =>
+                group.id === id ? { ...group, name: tempGroupName } : group
+            )
+        );
+
+        // Send PATCH request to backend to update food group
+        try {
+            const changes = { id: id, name: tempGroupName };
+            const newFoodGroups = await foodgroupAPI.changeFoodGroup(
+                USERID,
+                changes
+            );
+            const sortedFoodGroups: FoodGroupType[] = [...newFoodGroups].sort(
+                (a, b) => a.display_order - b.display_order
+            );
+            setFoodGroups(sortedFoodGroups);
+        } catch (err) {
+            // rollback
+            setFoodGroups(previous);
+            console.error(err);
+        }
+        // Reset editing state
+        setEditingGroupId(null);
+        setTempGroupName('');
+    };
+
+    const shiftFoodGroup = async (id: number, direction: 'up' | 'down') => {
+        console.log(`Shifting group ${id} ${direction}`);
+        // Capture previous snapshot
+        const previous = foodGroups;
+        const unshiftedGroups = [...foodGroups];
+
+        // Find the group to move
+        const groupToMove = foodGroups.find((group) => group.id === id);
+        if (!groupToMove) return;
+        console.log('groupToMove', groupToMove);
+        // Find the group to swap with
+        const swapGroup = foodGroups.find(
+            (group) =>
+                group.display_order ===
+                groupToMove.display_order + (direction === 'up' ? -1 : 1)
+        );
+        if (!swapGroup) return; // Can't move further in that direction
+        console.log('swapGroup', swapGroup);
+
+        // Optimistically update UI
+        const shiftedGroups = unshiftedGroups.map((group) => {
+            if (group.id === id) {
+                return {
+                    ...group,
+                    display_order:
+                        group.display_order + (direction === 'up' ? -1 : 1),
+                };
+            }
+            if (group.id === swapGroup.id) {
+                return {
+                    ...group,
+                    display_order:
+                        group.display_order + (direction === 'up' ? 1 : -1),
+                };
+            }
+            return group;
+        });
+
+        console.log('shiftedGroups', shiftedGroups);
+
+        const sortedFoodGroups: FoodGroupType[] = [...shiftedGroups].sort(
+            (a, b) => a.display_order - b.display_order
+        );
+        setFoodGroups(sortedFoodGroups);
+
+        // PATCH request to backend to update food group order
+        try {
+            const newFoodGroups = await foodgroupAPI.reorderFoodGroup(USERID, [
+                {
+                    id: id,
+                    display_order:
+                        groupToMove.display_order +
+                        (direction === 'up' ? -1 : 1),
+                },
+                {
+                    id: swapGroup.id,
+                    display_order:
+                        swapGroup.display_order + (direction === 'up' ? 1 : -1),
+                },
+            ]);
+            const sortedFoodGroups: FoodGroupType[] = [...newFoodGroups].sort(
+                (a, b) => a.display_order - b.display_order
+            );
+            setFoodGroups(sortedFoodGroups);
+        } catch (err) {
+            // rollback
+            setFoodGroups(previous);
+            console.error(err);
+        }
+    };
+
     // Delete Food Item and Group Handlers
     const deleteFoodItem = async (foodId: number) => {
         // Capture previous snapshot
@@ -319,7 +422,10 @@ function TrackPantry() {
                 removedFoodGroup.id
             );
             // Update state with current data from database after delete
-            setFoodGroups(newFoodGroups);
+            const sortedFoodGroups: FoodGroupType[] = [...newFoodGroups].sort(
+                (a, b) => a.display_order - b.display_order
+            );
+            setFoodGroups(sortedFoodGroups);
         } catch (err) {
             // rollback
             setFoodItems(previousFood);
@@ -576,9 +682,12 @@ function TrackPantry() {
                                     onFoodClick={openItemModal}
                                     openAddItemModal={openAddItemModal}
                                     editFoodGroup={editFoodGroup}
-                                    // tempGroupName={tempGroupName}
-                                    // setTempGroupName={setTempGroupName}
+                                    handleSaveFoodGroup={saveFoodGroup}
+                                    shiftFoodGroup={shiftFoodGroup}
                                     deleteFoodGroup={deleteFoodGroup}
+                                    tempGroupName={tempGroupName}
+                                    setTempGroupName={setTempGroupName}
+                                    isEditing={editingGroupId === id}
                                     is_system={foodGroup.is_system}
                                 />
                             );

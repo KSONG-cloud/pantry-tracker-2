@@ -23,7 +23,12 @@ interface FoodGroupProps {
     onFoodClick: (foodItem: FoodUnitType) => void;
     openAddItemModal: (groupId: number) => void;
     editFoodGroup: (id: number, name: string) => void;
+    handleSaveFoodGroup: (id: number) => void;
+    shiftFoodGroup: (id: number, direction: 'up' | 'down') => void;
     deleteFoodGroup: (id: number) => void;
+    tempGroupName: string;
+    setTempGroupName: (name: string) => void;
+    isEditing: boolean;
     is_system: boolean;
 }
 
@@ -35,7 +40,12 @@ const FoodGroup = ({
     onFoodClick,
     openAddItemModal,
     editFoodGroup,
+    handleSaveFoodGroup,
+    shiftFoodGroup,
     deleteFoodGroup,
+    tempGroupName,
+    setTempGroupName,
+    isEditing,
     is_system,
 }: FoodGroupProps) => {
     const { setNodeRef, isOver } = useDroppable({
@@ -50,9 +60,23 @@ const FoodGroup = ({
         <div className="foodgroup-container" ref={setNodeRef} style={style}>
             <div className="foodgroup-header">
                 <div className="foodgroup-icon"></div>
-                <span className="foodgroup-name">{name}</span>
+                {isEditing ? (
+                    <input
+                        type="text"
+                        value={tempGroupName}
+                        autoFocus
+                        onChange={(e) => setTempGroupName(e.target.value)}
+                        onBlur={() => handleSaveFoodGroup(id)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSaveFoodGroup(id);
+                        }}
+                    />
+                ) : (
+                    <span className="foodgroup-name">{name}</span>
+                )}
+                {/* <span className="foodgroup-name">{name}</span> */}
                 <button
-                    className="foodgroup-add-button"
+                    className="foodgroup-additem-button"
                     onClick={() => openAddItemModal(id)}
                 >
                     ADD ITEM
@@ -77,6 +101,19 @@ const FoodGroup = ({
                 )}
 
                 <div className="foodgroup-line"></div>
+
+                <div
+                    className={`foodgroup arrow up`}
+                    onClick={() => shiftFoodGroup(id, 'up')}
+                >
+                    ▲
+                </div>
+                <div
+                    className={`foodgroup arrow down`}
+                    onClick={() => shiftFoodGroup(id, 'down')}
+                >
+                    ▼
+                </div>
             </div>
             <FoodList
                 foodList={list}

@@ -210,16 +210,22 @@ export const addFoodGroupsByUser = async (
     return result.rows[0];
 };
 
-export const patchFoodGroups = async (groupId: number) => {
+export const patchFoodGroups = async (
+    groupId: number,
+    setClause: string,
+    values: FoodGroupType[keyof FoodGroupType][],
+    update_length: number
+) => {
     const result: QueryResult = await pool.query(
-        `DELETE FROM foodgroup 
-        WHERE id = $1
+        `UPDATE foodgroup
+        SET ${setClause}
+        WHERE id = $${update_length + 1}
         RETURNING 
             id,
             name,
             display_order,
             is_system`,
-        [groupId]
+        [...values, groupId]
     );
 
     if (!result.rows) {
@@ -227,6 +233,29 @@ export const patchFoodGroups = async (groupId: number) => {
     }
 
     return result.rows[0];
+};
+
+export const reorderFoodGroups = async (
+    reorder: { id: number; display_order: number }[]
+) => {
+    await pool.query('BEGIN');
+
+    await pool.query(`SET CONSTRAINTS user_id_and_display_order DEFERRED`);
+
+    try {
+        for (const item of reorder) {
+            await pool.query(
+                `UPDATE foodgroup
+                SET display_order = $1
+                WHERE id = $2`,
+                [item.display_order, item.id]
+            );
+        }
+        await pool.query('COMMIT');
+    } catch (error) {
+        await pool.query('ROLLBACK');
+        throw error;
+    }
 };
 
 export const deleteFoodGroups = async (groupId: number) => {

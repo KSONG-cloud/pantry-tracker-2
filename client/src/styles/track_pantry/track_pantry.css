@@ -58,7 +58,7 @@ button.toggle.freshness {
 }
 
 .add-item-button {
-        /* Layout */
+    /* Layout */
     width: clamp(26px, 8vw, 38px);
     height: clamp(26px, 8vw, 38px);
 
@@ -74,10 +74,10 @@ button.toggle.freshness {
     background-color: #b7cfb1;
 }
 
-
 .add-item-button:hover {
     box-shadow: 0 2px #c8c8c8;
     transform: translateY(-1px);
+    cursor: pointer;
 }
 
 .add-item-button:active {
@@ -105,7 +105,6 @@ button.toggle.freshness {
 
 #sort-select {
     border: 0;
-    text-align: center;
     font-weight: bold;
     font-size: 14px;
     text-transform: uppercase;
@@ -113,19 +112,22 @@ button.toggle.freshness {
     letter-spacing: -0.5px;
     height: 38px;
     border-radius: 15px;
-    width:max-content;
+    width: max-content;
     background-color: #fefffe;
-    padding: 0 10px 0 10px;
+    padding: 0 15px 0 15px;
     cursor: pointer;
+    text-align: center;
+    text-align-last: center;
+    -moz-text-align-last: center;
 
     /* Remove dropdown arrow */
     appearance: none;
-    -webkit-appearance: none;  /* Safari */
-    -moz-appearance: none;     /* Firefox */
+    -webkit-appearance: none; /* Safari */
+    -moz-appearance: none; /* Firefox */
 }
 
 .sort-select-option {
-    text-align: center;
+    /* text-align: center; */
 }
 
 .sort-toggle {
