@@ -142,7 +142,7 @@ const FoodUnit = ({
                             handleChange(1);
                         }}
                     >
-                        <Plus className='food-addbutton-icon'/>
+                        <Plus className="food-addbutton-icon" />
                     </button>
                     <div className="food-quantity">
                         {Number(food.quantity) || 0}
@@ -154,7 +154,7 @@ const FoodUnit = ({
                             handleChange(-1);
                         }}
                     >
-                        <Minus className='food-minusbutton-icon'/>
+                        <Minus className="food-minusbutton-icon" />
                     </button>
                 </div>
             </div>

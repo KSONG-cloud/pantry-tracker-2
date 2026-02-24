@@ -609,7 +609,7 @@ function TrackPantry() {
                             openAddItemModal(unassignedId);
                         }}
                     >
-                        <Plus className='add-item-button-icon' />
+                        <Plus className="add-item-button-icon" />
                     </button>
                 </div>
                 <div className="filter sort">
