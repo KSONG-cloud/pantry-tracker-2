@@ -27,7 +27,11 @@ export const getFoodMap = async (req: Request, res: Response) => {
 // Pantry
 export const getPantryByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const userId = Number(req.user.userId);
 
         if (Number.isNaN(userId)) {
             res.status(400).json({ message: 'Invalid user id' });
@@ -43,7 +47,10 @@ export const getPantryByUser = async (req: Request, res: Response) => {
 
 export const addFoodItemPantry = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
         const item: FoodUnitType = req.body;
 
         if (Number.isNaN(userId)) {
@@ -70,7 +77,10 @@ export const addFoodItemPantry = async (req: Request, res: Response) => {
 
 export const patchFoodItemPantry = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
         const pantryId = Number(req.params.pantryId);
         const updates: Partial<PantryRow> = req.body;
 
@@ -93,7 +103,10 @@ export const patchFoodItemPantry = async (req: Request, res: Response) => {
 
 export const deletePantryByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
         const pantryId = Number(req.params.pantryId);
         console.log(userId, pantryId);
 
@@ -113,7 +126,10 @@ export const deletePantryByUser = async (req: Request, res: Response) => {
 // Food Groups
 export const getFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
 
         if (Number.isNaN(userId)) {
             res.status(400).json({ message: 'Invalid user id' });
@@ -129,7 +145,10 @@ export const getFoodGroupsByUser = async (req: Request, res: Response) => {
 
 export const addFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
         const group = req.body;
 
         if (Number.isNaN(userId)) {
@@ -146,7 +165,10 @@ export const addFoodGroupsByUser = async (req: Request, res: Response) => {
 
 export const patchFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
         const groupId = Number(req.params.foodgroupId);
         const changes = req.body;
 
@@ -169,7 +191,10 @@ export const patchFoodGroupsByUser = async (req: Request, res: Response) => {
 export const reorderFoodGroupsByUser = async (req: Request, res: Response) => {
     console.log('reorderFoodGroupsByUser called');
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
         const reorder = req.body;
 
         console.log('Reorder request:', { userId, reorder });
@@ -191,7 +216,10 @@ export const reorderFoodGroupsByUser = async (req: Request, res: Response) => {
 
 export const deleteFoodGroupsByUser = async (req: Request, res: Response) => {
     try {
-        const userId = Number(req.params.userId);
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userId = Number(req.user.userId);
         const groupId = Number(req.params.foodgroupId);
 
         if (Number.isNaN(userId)) {

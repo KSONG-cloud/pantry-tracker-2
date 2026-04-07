@@ -12,42 +12,40 @@ import {
     deleteFoodGroupsByUser,
 } from '../controller/controller.js';
 
+// Middleware
+import { authenticateToken } from '../auth/auth.middleware.js';
+
 const router = Router();
 
-// Delete later
-import type { Request, Response } from 'express';
-import { addFood as addFoodRepo } from '../database/food.repository.js';
-const addFood = async (req: Request, res: Response) => {
-    const food = req.body.food_name;
-    const output = await addFoodRepo(food);
-    res.status(200).json(output);
-};
-router.post('/foodadd', addFood);
-
 // Food Routes
-router.get('/foodmap', getFoodMap);
+router.get('/foodmap', authenticateToken, getFoodMap);
 
 // Pantry Routes
 // GET
-router.get('/users/:userId/pantry', getPantryByUser);
+router.get('/pantry', authenticateToken, getPantryByUser);
 // POST
-router.post('/users/:userId/pantry', addFoodItemPantry);
+router.post('/pantry', authenticateToken, addFoodItemPantry);
 // PATCH
-router.patch('/users/:userId/pantry/:pantryId', patchFoodItemPantry);
+router.patch('/pantry/:pantryId', authenticateToken, patchFoodItemPantry);
 // DELETE
-router.patch('/users/:userId/pantry/:pantryId/delete', deletePantryByUser);
+router.patch('/pantry/:pantryId/delete', authenticateToken, deletePantryByUser);
 
 // Food Groups Routes
 // GET
-router.get('/users/:userId/foodgroups', getFoodGroupsByUser);
+router.get('/foodgroups', authenticateToken, getFoodGroupsByUser);
 // POST
-router.post('/users/:userId/foodgroups', addFoodGroupsByUser);
+router.post('/foodgroups', authenticateToken, addFoodGroupsByUser);
 // PATCH
-router.patch('/users/:userId/foodgroups/reorder', reorderFoodGroupsByUser);
-router.patch('/users/:userId/foodgroups/:foodgroupId', patchFoodGroupsByUser);
+router.patch('/foodgroups/reorder', authenticateToken, reorderFoodGroupsByUser);
+router.patch(
+    '/foodgroups/:foodgroupId',
+    authenticateToken,
+    patchFoodGroupsByUser
+);
 // DELETE
 router.delete(
-    '/users/:userId/foodgroups/:foodgroupId/delete',
+    '/foodgroups/:foodgroupId/delete',
+    authenticateToken,
     deleteFoodGroupsByUser
 );
 
