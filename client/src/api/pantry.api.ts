@@ -4,24 +4,27 @@ import type { FoodUnitType, FoodEditType } from '../types/food';
 const BASE_URL = 'http://localhost:3001';
 
 export const getPantry = (userId: number) =>
-    fetchJson<FoodUnitType[]>(`${BASE_URL}/users/${userId}/pantry`);
+    fetchJson<FoodUnitType[]>(`${BASE_URL}/pantry`, { credentials: 'include' });
 
 export const addFoodItem = (userId: number, food: FoodUnitType) =>
-    fetchJson<FoodUnitType>(`${BASE_URL}/users/${userId}/pantry`, {
+    fetchJson<FoodUnitType>(`${BASE_URL}/pantry`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(food),
+        credentials: 'include',
     });
 
 // Return type might be wrong!!!
 export const changeFoodItem = (userId: number, food: FoodEditType) =>
-    fetchJson<FoodUnitType>(`${BASE_URL}/users/${userId}/pantry/${food.id}`, {
+    fetchJson<FoodUnitType>(`${BASE_URL}/pantry/${food.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(food),
+        credentials: 'include',
     });
 
 export const deleteFoodItem = (userId: number, foodId: number) =>
-    fetchJson<any>(`${BASE_URL}/users/${userId}/pantry/${foodId}/delete`, {
+    fetchJson<any>(`${BASE_URL}/pantry/${foodId}/delete`, {
         method: 'PATCH',
+        credentials: 'include',
     });

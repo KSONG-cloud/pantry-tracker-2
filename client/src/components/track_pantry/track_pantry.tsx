@@ -37,10 +37,11 @@ import {
     type DragStartEvent,
 } from '@dnd-kit/core';
 
-// Info
-const USERID = 1;
+interface TrackPantryProps {
+    userId: number;
+}
 
-function TrackPantry() {
+function TrackPantry({ userId }: TrackPantryProps) {
     // Food Items and Groups State
     const [foodGroups, setFoodGroups] = useState<FoodGroupType[]>([]);
     const [groupMap, setGroupMap] = useState<Record<number, string>>({});
@@ -83,14 +84,14 @@ function TrackPantry() {
     // Fetching Food Items and Groups from Database
     const fetchFoodItems = async () => {
         // Fetch food items from backend
-        const res = await pantryAPI.getPantry(USERID);
+        const res = await pantryAPI.getPantry(userId);
         setFoodItems(res);
         setLoading(false);
     };
 
     const fetchFoodGroups = async () => {
         // Fetch food groups from backend
-        const res = await foodgroupAPI.getFoodGroups(USERID);
+        const res = await foodgroupAPI.getFoodGroups();
         const sortedFoodGroups: FoodGroupType[] = [...res].sort(
             (a, b) => a.display_order - b.display_order
         );
@@ -128,7 +129,7 @@ function TrackPantry() {
         // Just send POST request to add item
         try {
             const newItem: FoodUnitType = await pantryAPI.addFoodItem(
-                USERID,
+                userId,
                 normalisedFoodItem
             );
             // Replace the optimistic item with the server response (which has the real ID)
@@ -162,10 +163,7 @@ function TrackPantry() {
 
         // Send POST request to backend to add food group
         try {
-            const newFoodGroup = await foodgroupAPI.addFoodGroup(
-                USERID,
-                tempFoodGroup
-            );
+            const newFoodGroup = await foodgroupAPI.addFoodGroup(tempFoodGroup);
             setFoodGroups((prev) =>
                 prev.map((group) =>
                     group.id === tempFoodGroup.id ? newFoodGroup : group
@@ -204,7 +202,7 @@ function TrackPantry() {
         // Send PATCH request to backend to update food item
         try {
             const newEdits = await pantryAPI.changeFoodItem(
-                USERID,
+                userId,
                 normalisedEdits
             );
             // Replace the optimistic item with the server response (which has the real ID)
@@ -249,10 +247,7 @@ function TrackPantry() {
         // Send PATCH request to backend to update food group
         try {
             const changes = { id: id, name: tempGroupName };
-            const newFoodGroups = await foodgroupAPI.changeFoodGroup(
-                USERID,
-                changes
-            );
+            const newFoodGroups = await foodgroupAPI.changeFoodGroup(changes);
             const sortedFoodGroups: FoodGroupType[] = [...newFoodGroups].sort(
                 (a, b) => a.display_order - b.display_order
             );
@@ -314,7 +309,7 @@ function TrackPantry() {
 
         // PATCH request to backend to update food group order
         try {
-            const newFoodGroups = await foodgroupAPI.reorderFoodGroup(USERID, [
+            const newFoodGroups = await foodgroupAPI.reorderFoodGroup([
                 {
                     id: id,
                     display_order:
@@ -348,7 +343,7 @@ function TrackPantry() {
 
         // Just send PATCH request to add item
         try {
-            pantryAPI.deleteFoodItem(USERID, foodId);
+            pantryAPI.deleteFoodItem(userId, foodId);
         } catch (err) {
             // rollback
             setFoodItems(previous);
@@ -409,7 +404,7 @@ function TrackPantry() {
             // API: Move items to unassigned
             await Promise.all(
                 itemsToMove.map((item) =>
-                    pantryAPI.changeFoodItem(USERID, {
+                    pantryAPI.changeFoodItem(userId, {
                         id: item.id,
                         foodgroup_id: unassignedId,
                     })
@@ -418,7 +413,6 @@ function TrackPantry() {
 
             // API: Delete food group (includes reorder)
             const newFoodGroups = await foodgroupAPI.deleteFoodGroup(
-                USERID,
                 removedFoodGroup.id
             );
             // Update state with current data from database after delete
@@ -733,7 +727,7 @@ function TrackPantry() {
                     currentGroupId={foodGroupId}
                     onClose={closeAddItemModal}
                     onAddItem={addFoodItem}
-                    userId={USERID}
+                    userId={userId}
                     isAdding={addItemModalOpen}
                 />
             )}
