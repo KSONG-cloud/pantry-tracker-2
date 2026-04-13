@@ -8,7 +8,7 @@ import { useState } from 'react';
 import '@/styles/track_pantry/modal.css';
 
 // Types
-import type { FoodUnitType, FoodGroupType } from '../../types/food';
+import type { FoodUnitType } from '../../types/food';
 
 interface AddItemModalProps {
     tempId: number;
