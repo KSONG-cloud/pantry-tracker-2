@@ -63,6 +63,7 @@ function App() {
         <Router>
             <Header date={today} user={user} onLogout={handleLogOut}></Header>
             <Routes>
+                <Route path="/loading" element={<Loading />} />
                 <Route path="/login" element={<Login setUser={setUser} />} />
                 <Route
                     path="/register"
