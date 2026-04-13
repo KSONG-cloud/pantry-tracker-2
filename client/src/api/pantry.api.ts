@@ -3,10 +3,10 @@ import type { FoodUnitType, FoodEditType } from '../types/food';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-export const getPantry = (userId: number) =>
+export const getPantry = () =>
     fetchJson<FoodUnitType[]>(`${BASE_URL}/pantry`, { credentials: 'include' });
 
-export const addFoodItem = (userId: number, food: FoodUnitType) =>
+export const addFoodItem = (food: FoodUnitType) =>
     fetchJson<FoodUnitType>(`${BASE_URL}/pantry`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -15,7 +15,7 @@ export const addFoodItem = (userId: number, food: FoodUnitType) =>
     });
 
 // Return type might be wrong!!!
-export const changeFoodItem = (userId: number, food: FoodEditType) =>
+export const changeFoodItem = (food: FoodEditType) =>
     fetchJson<FoodUnitType>(`${BASE_URL}/pantry/${food.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -23,7 +23,7 @@ export const changeFoodItem = (userId: number, food: FoodEditType) =>
         credentials: 'include',
     });
 
-export const deleteFoodItem = (userId: number, foodId: number) =>
+export const deleteFoodItem = (foodId: number) =>
     fetchJson<any>(`${BASE_URL}/pantry/${foodId}/delete`, {
         method: 'PATCH',
         credentials: 'include',

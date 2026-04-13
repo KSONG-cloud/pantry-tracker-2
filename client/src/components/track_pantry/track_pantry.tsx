@@ -84,7 +84,7 @@ function TrackPantry({ userId }: TrackPantryProps) {
     // Fetching Food Items and Groups from Database
     const fetchFoodItems = async () => {
         // Fetch food items from backend
-        const res = await pantryAPI.getPantry(userId);
+        const res = await pantryAPI.getPantry();
         setFoodItems(res);
         setLoading(false);
     };
@@ -128,10 +128,8 @@ function TrackPantry({ userId }: TrackPantryProps) {
 
         // Just send POST request to add item
         try {
-            const newItem: FoodUnitType = await pantryAPI.addFoodItem(
-                userId,
-                normalisedFoodItem
-            );
+            const newItem: FoodUnitType =
+                await pantryAPI.addFoodItem(normalisedFoodItem);
             // Replace the optimistic item with the server response (which has the real ID)
             setFoodItems((prev) =>
                 prev.map((item) =>
@@ -201,10 +199,7 @@ function TrackPantry({ userId }: TrackPantryProps) {
 
         // Send PATCH request to backend to update food item
         try {
-            const newEdits = await pantryAPI.changeFoodItem(
-                userId,
-                normalisedEdits
-            );
+            const newEdits = await pantryAPI.changeFoodItem(normalisedEdits);
             // Replace the optimistic item with the server response (which has the real ID)
             setFoodItems((prev) =>
                 prev.map((item) =>
@@ -343,7 +338,7 @@ function TrackPantry({ userId }: TrackPantryProps) {
 
         // Just send PATCH request to add item
         try {
-            pantryAPI.deleteFoodItem(userId, foodId);
+            pantryAPI.deleteFoodItem(foodId);
         } catch (err) {
             // rollback
             setFoodItems(previous);
@@ -404,7 +399,7 @@ function TrackPantry({ userId }: TrackPantryProps) {
             // API: Move items to unassigned
             await Promise.all(
                 itemsToMove.map((item) =>
-                    pantryAPI.changeFoodItem(userId, {
+                    pantryAPI.changeFoodItem({
                         id: item.id,
                         foodgroup_id: unassignedId,
                     })
