@@ -3,7 +3,7 @@ import { fetchJson } from './fetchJson';
 // Types
 import type { FoodGroupType } from '../types/food';
 
-const BASE_URL = process.env.API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const getFoodGroups = () =>
     fetchJson<FoodGroupType[]>(`${BASE_URL}/foodgroups`, {
