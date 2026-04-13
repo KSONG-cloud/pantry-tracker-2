@@ -15,6 +15,7 @@ import '@/styles/track_pantry/track_pantry.css';
 import * as helper from '../../helpers/track_pantry.helper';
 import * as freshness from '../../helpers/freshness.helper';
 import * as sortandfilter from '../../helpers/sortandfilter.helper';
+// import * as time from '../../helpers/time.helper';
 
 // Lucide
 import { Plus } from 'lucide-react';
@@ -50,7 +51,7 @@ function TrackPantry({ userId }: TrackPantryProps) {
     const tempIdCounter = useRef(-1);
 
     // General State
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     // Filter and Sort States

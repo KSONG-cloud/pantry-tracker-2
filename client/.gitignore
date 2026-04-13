@@ -30,3 +30,4 @@ dist-ssr
 
 # Scrap
 *scrap.ts
+*info.tsx

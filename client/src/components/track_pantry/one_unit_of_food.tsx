@@ -42,14 +42,14 @@ const FoodUnit = ({
         });
     };
 
-    const formatDate = (
-        label: string,
-        date: string | Date | null | undefined
-    ) => {
-        if (!date) return '';
-        const newDate: Date = new Date(date);
-        return `${label}: ${newDate.toLocaleDateString('en-AU', { dateStyle: 'short' })}`;
-    };
+    // const formatDate = (
+    //     label: string,
+    //     date: string | Date | null | undefined
+    // ) => {
+    //     if (!date) return '';
+    //     const newDate: Date = new Date(date);
+    //     return `${label}: ${newDate.toLocaleDateString('en-AU', { dateStyle: 'short' })}`;
+    // };
 
     let dateText: string = '';
     let freshnessLevel: FreshnessLevel;
