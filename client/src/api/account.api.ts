@@ -1,6 +1,6 @@
 import { fetchJson } from './fetchJson';
 
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = process.env.API_URL;
 
 export const accountApi = {
     getAccount: () => fetchJson(`${BASE_URL}/account`),

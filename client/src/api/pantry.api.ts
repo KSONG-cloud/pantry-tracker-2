@@ -1,7 +1,7 @@
 import { fetchJson } from './fetchJson';
 import type { FoodUnitType, FoodEditType } from '../types/food';
 
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = process.env.API_URL;
 
 export const getPantry = (userId: number) =>
     fetchJson<FoodUnitType[]>(`${BASE_URL}/pantry`, { credentials: 'include' });
