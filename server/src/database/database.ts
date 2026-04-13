@@ -11,6 +11,18 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASS,
     port: Number(process.env.DB_PORT ?? 5432),
+    ssl: {
+        rejectUnauthorized: false, // This tells Node it's okay to connect to Supabase's SSL cert
+    },
+});
+
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
 });
 
 export { pool };
+
+
+
+
