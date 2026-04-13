@@ -1,7 +1,3 @@
-// Environment Variables
-import dotenv from 'dotenv';
-dotenv.config();
-
 // React
 import { useEffect, useState } from 'react';
 
