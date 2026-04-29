@@ -4,6 +4,7 @@ import { cookieOptionsAccess, cookieOptionsRefresh } from './auth.cookies.js';
 // Service Functions for Authentication
 import {
     registerUser,
+    checkEmailExists,
     generateAccessToken,
     generateRefreshToken,
     validateLogin,
@@ -43,6 +44,24 @@ export const register = async (req: Request, res: Response) => {
     }
 };
 
+export const checkEmail = async (req: Request, res: Response) => {
+    try {
+        const email = req.query.email as string;
+        
+        if (!email) {
+            res.status(400).json({ message: 'Email query parameter is required' });
+            return;
+        }
+        const emailExists = await checkEmailExists(email);
+        res.status(200).json({ emailExists });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal server error',
+            error: error instanceof Error ? error.message : 'Unknown error',
+        });
+    }
+};
+
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
@@ -50,12 +69,9 @@ export const login = async (req: Request, res: Response) => {
             res.status(400).json({ message: 'Missing required fields' });
             return;
         }
-
         const user = await validateLogin(email, password);
         const accessToken = generateAccessToken(user.id);
         const refreshToken = await generateRefreshToken(user.id);
-
-        console.log('Generated refresh token for user:', user);
 
         await saveRefreshToken(user.id, refreshToken);
 
@@ -133,7 +149,6 @@ export const logout = async (req: Request, res: Response) => {
 
 // Get user info for the currently authenticated user
 export const getCurrentUser = async (req: Request, res: Response) => {
-    console.log('Fetching current user with req.user:', req.user);
     if (!req.user) {
         return res.status(401).json({ message: 'Unauthorized' });
     }

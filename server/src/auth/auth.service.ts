@@ -33,6 +33,15 @@ export const registerUser = async (
     return result.rows[0];
 };
 
+export const checkEmailExists = async (email: string) => {
+    const result = await pool.query(
+        'SELECT id FROM account WHERE email = $1',
+        [email]
+    );
+
+    return result.rows.length > 0;
+};
+
 export const generateAccessToken = (userId: number) => {
     const payload = { userId };
     const secret = process.env.JWT_ACCESS_SECRET as string;

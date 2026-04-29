@@ -31,6 +31,11 @@ export const authApi = {
             credentials: 'include',
         }),
 
+    checkEmail: (email: string) =>
+        fetch(
+            `${BASE_URL}/auth/check-email?email=${encodeURIComponent(email)}`
+        ),
+
     login: (email: string, password: string) =>
         fetch(`${BASE_URL}/auth/login`, {
             method: 'POST',

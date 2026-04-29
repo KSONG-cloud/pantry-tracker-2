@@ -12,6 +12,8 @@ interface RegisterProps {
 export const Register = ({ setUser }: RegisterProps) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
@@ -29,6 +31,54 @@ export const Register = ({ setUser }: RegisterProps) => {
         } else {
             console.error('Login failed:', data);
             alert('Login failed: ' + data.message);
+        }
+    };
+
+    // Handle email validation
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setEmail(value);
+        if (emailError) {
+            setEmailError(false);
+            setEmailErrorMessage('');
+        }
+    };
+
+    const validateEmailFormat = async () => {
+        if (email.length === 0) return;
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        const isValidFormat = emailRegex.test(email);
+
+        if (!isValidFormat) {
+            setEmailError(true);
+            setEmailErrorMessage(
+                'Please enter a valid email format. For example: john@example.com'
+            );
+            return;
+        }
+
+        // setEmailError(false);  Do I even need this line???
+
+        try {
+            const res = await authApi.checkEmail(email);
+
+            if (!res.ok) throw new Error('Server failed');
+
+            const data = await res.json();
+
+            if (data.emailExists) {
+                console.log("hello");
+                setEmailError(true);
+                setEmailErrorMessage(
+                    'This email is already registered. Please log in.'
+                );
+            } else {
+                setEmailErrorMessage('');
+            }
+        } catch (error) {
+            console.error('Could not verify email:', error);
         }
     };
 
@@ -51,8 +101,21 @@ export const Register = ({ setUser }: RegisterProps) => {
                         type="email"
                         placeholder="Email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
+                        onBlur={validateEmailFormat}
+                        style={{ borderColor: emailError ? 'red' : undefined }}
                     />
+                    {emailError && (
+                        <p
+                            style={{
+                                color: 'red',
+                                fontSize: '12px',
+                                marginTop: '4px',
+                            }}
+                        >
+                            {emailErrorMessage}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <label>Password:</label>

@@ -6,6 +6,7 @@ import { authenticateToken } from './auth.middleware.js';
 // Controllers
 import {
     register,
+    checkEmail,
     login,
     refresh,
     logout,
@@ -15,6 +16,8 @@ import {
 const router = Router();
 
 router.post('/auth/register', register);
+
+router.get('/auth/check-email', checkEmail);
 
 router.post('/auth/login', login);
 
