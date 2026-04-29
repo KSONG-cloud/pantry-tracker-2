@@ -1,11 +1,13 @@
 import type { CookieOptions } from 'express';
 
-const isProduction:boolean = process.env.NODE_ENV === 'production';
+const isProduction: boolean = process.env.NODE_ENV === 'production';
 
 export const cookieOptionsAccess: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: process.env.COOKIE_SECURITY as boolean | "lax" | "none" | "strict" || "none",
+    sameSite:
+        (process.env.COOKIE_SECURITY as boolean | 'lax' | 'none' | 'strict') ||
+        'none',
     maxAge: process.env.ACCESS_TOKEN_EXPIRATION
         ? parseInt(process.env.ACCESS_TOKEN_EXPIRATION)
         : 900000, // 15 minutes
@@ -14,7 +16,9 @@ export const cookieOptionsAccess: CookieOptions = {
 export const cookieOptionsRefresh: CookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'lax',
+    sameSite:
+        (process.env.COOKIE_SECURITY as boolean | 'lax' | 'none' | 'strict') ||
+        'none',
     maxAge: process.env.REFRESH_TOKEN_EXPIRATION
         ? parseInt(process.env.REFRESH_TOKEN_EXPIRATION)
         : 604800000, // 7 days

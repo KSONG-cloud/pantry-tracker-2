@@ -21,7 +21,7 @@ app.use(cookieParser());
 // app.use(helmet());
 app.use(
     cors({
-        origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+        origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
         credentials: true,
     })
 );
@@ -30,7 +30,7 @@ app.use(
 app.use(router);
 app.use(authRouter);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.SERVER_PORT || 3001;
 
 // Start the server
 app.listen(PORT, () => {
