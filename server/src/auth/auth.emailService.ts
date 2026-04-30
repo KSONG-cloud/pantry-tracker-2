@@ -1,28 +1,26 @@
 import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-let transporter: any; // We will assign the actual transporter object after we create the Ethereal account
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Build the switch logic
+// 1. Initialize our email clients separately to avoid TypeScript 'any' issues
+const resend = isProduction ? new Resend(process.env.RESEND_API_KEY) : null;
+
+const nodemailerTransporter = !isProduction
+    ? nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
+          secure: false,
+          auth: {
+              user: process.env.ETHEREAL_USER,
+              pass: process.env.ETHEREAL_PASS,
+          },
+      })
+    : null;
+
 if (process.env.NODE_ENV === 'production') {
-    //  PRODUCTION MODE: Use your real email provider (SendGrid, Gmail, etc.)
-    transporter = nodemailer.createTransport({
-        service: 'gmail', // Or whatever you eventually use
-        auth: {
-            user: process.env.PROD_EMAIL_USER,
-            pass: process.env.PROD_EMAIL_PASS,
-        },
-    });
     console.log('Production Email transporter is ready!');
 } else {
-    // DEVELOPMENT MODE: Use the fake Ethereal sandbox
-    transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        auth: {
-            user: process.env.ETHEREAL_USER, // Pulled safely from .env!
-            pass: process.env.ETHEREAL_PASS,
-        },
-    });
     console.log('Local Testing (Ethereal) transporter is ready!');
 }
 
@@ -33,30 +31,48 @@ export const sendVerificationEmail = async (
     try {
         const verificationLink = `${process.env.CLIENT_ORIGIN}/verify?token=${token}`;
 
-        const info = await transporter.sendMail({
-            from: `"Pantry Tracker" <${process.env.ETHEREAL_USER}>`,
-            to: userEmail,
-            subject: 'Verify your account',
-            html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                    <h2>Welcome to the App!</h2>
-                    <p>Click the button below to verify your email address and activate your account.</p>
-                    <a href="${verificationLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">
-                        Verify My Account
-                    </a>
-                    <p style="margin-top: 20px; font-size: 12px; color: gray;">
-                        If you didn't request this, please ignore this email.
-                    </p>
-                </div>
-            `,
-        });
+        const htmlContent = `
+            <div style="font-family: Arial, sans-serif; padding: 20px;">
+                <h2>Welcome to the App!</h2>
+                <p>Click the button below to verify your email address and activate your account.</p>
+                <a href="${verificationLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">
+                    Verify My Account
+                </a>
+                <p style="margin-top: 20px; font-size: 12px; color: gray;">
+                    If you didn't request this, please ignore this email.
+                </p>
+            </div>
+        `;
 
-        console.log(`Verification email successfully sent to ${userEmail}`);
+        const subject = 'Verify your account';
 
-        // THE ETHEREAL MAGIC 
-        // This generates a clickable link in your terminal to view the fake email!
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-        console.log('----------------------------------------\n');
+        if (isProduction && resend) {
+            await resend.emails.send({
+                from: `"Pantry Tracker" <${process.env.RESEND_EMAIL_USER}>`,
+                to: userEmail,
+                subject: subject,
+                html: htmlContent,
+            });
+            console.log(
+                `Verification email successfully sent to ${userEmail} via Resend`
+            );
+        } else if (nodemailerTransporter) {
+            const info = await nodemailerTransporter.sendMail({
+                from: `"Pantry Tracker" <${process.env.ETHEREAL_USER}>`,
+                to: userEmail,
+                subject: subject,
+                html: htmlContent,
+            });
+            console.log(
+                `Verification email successfully sent to ${userEmail} via Ethereal`
+            );
+
+            // THE ETHEREAL MAGIC
+            // This generates a clickable link in your terminal to view the fake email!
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        } else {
+            throw new Error('No email transporter available');
+        }
     } catch (error) {
         console.error('Error sending verification email:', error);
         throw new Error('Failed to send verification email');
