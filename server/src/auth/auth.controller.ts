@@ -1,10 +1,14 @@
 // Cookies
 import { cookieOptionsAccess, cookieOptionsRefresh } from './auth.cookies.js';
 
+// Email Service
+import { sendVerificationEmail } from './auth.emailService.js';
+
 // Service Functions for Authentication
 import {
     registerUser,
     checkEmailExists,
+    verifyAccount,
     generateAccessToken,
     generateRefreshToken,
     validateLogin,
@@ -35,7 +39,28 @@ export const register = async (req: Request, res: Response) => {
 
         res.cookie('refreshToken', refreshToken, cookieOptionsRefresh);
 
-        res.status(201).json({ user });
+        // The "Fake" Email Sender (For local testing)
+        // We create the exact link the user will eventually click in their email
+        const verificationLink = `${process.env.CLIENT_ORIGIN}/verify?token=${user.verification_token}`;
+
+        // console.log('\n----------------------------------------');
+        // console.log('🚨 NEW USER REGISTERED! 🚨');
+        // console.log(`Send this email to: ${email}`);
+        // console.log(`Click here to verify: ${verificationLink}`);
+        // console.log('----------------------------------------\n');
+        await sendVerificationEmail(email, user.verification_token);
+
+        // delete verification token from the user object before sending it back to the client
+        delete user.verification_token;
+
+        // Send a success message back to React
+        res.status(201).json({
+            message:
+                'Registration successful. Please check your email to verify your account.',
+            user: user,
+        });
+
+        // res.status(201).json({ user });
     } catch (error) {
         res.status(500).json({
             message: 'Internal server error',
@@ -47,13 +72,39 @@ export const register = async (req: Request, res: Response) => {
 export const checkEmail = async (req: Request, res: Response) => {
     try {
         const email = req.query.email as string;
-        
+
         if (!email) {
-            res.status(400).json({ message: 'Email query parameter is required' });
+            res.status(400).json({
+                message: 'Email query parameter is required',
+            });
             return;
         }
         const emailExists = await checkEmailExists(email);
         res.status(200).json({ emailExists });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal server error',
+            error: error instanceof Error ? error.message : 'Unknown error',
+        });
+    }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+    try {
+        const token = req.body.token;
+        console.log('Received verification token:', token);
+
+        if (!token) {
+            res.status(400).json({ message: 'Verification token is required' });
+            return;
+        }
+
+        const verificationResult = await verifyAccount(token);
+
+        res.status(200).json({
+            message: 'Account verified successfully. You can now log in.',
+            user: verificationResult,
+        });
     } catch (error) {
         res.status(500).json({
             message: 'Internal server error',
@@ -70,6 +121,16 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
         const user = await validateLogin(email, password);
+
+        // Don't allow login if the account is not verified
+        if (!user.is_verified) {
+            res.status(403).json({
+                message:
+                    'Account not verified. Please check your email and verify before logging in.',
+            });
+            return;
+        }
+
         const accessToken = generateAccessToken(user.id);
         const refreshToken = await generateRefreshToken(user.id);
 

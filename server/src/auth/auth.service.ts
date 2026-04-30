@@ -19,27 +19,48 @@ export const registerUser = async (
         throw new Error('User already exists');
     }
 
+    // Generate the completely random, 64-character hex token for email verification
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+
     // Hash password
     const saltRounds = process.env.SALT ? parseInt(process.env.SALT) : 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
     // Insert user into database
     const result = await pool.query(
-        `INSERT INTO account (username, email, password_hash)
-        VALUES ($1, $2, $3)
-        RETURNING id, username, email`,
-        [username, email, passwordHash]
+        `INSERT INTO account (username, email, password_hash, verification_token)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, username, email, verification_token`,
+        [username, email, passwordHash, verificationToken]
     );
 
     return result.rows[0];
 };
 
 export const checkEmailExists = async (email: string) => {
-    const result = await pool.query(
-        'SELECT id FROM account WHERE email = $1',
-        [email]
-    );
+    const result = await pool.query('SELECT id FROM account WHERE email = $1', [
+        email,
+    ]);
 
     return result.rows.length > 0;
+};
+
+export const verifyAccount = async (token: string) => {
+    // We use UPDATE ... RETURNING to find the user and update them in a single step
+    const result = await pool.query(
+        `UPDATE account
+        SET is_verified = true, verification_token = NULL
+        WHERE verification_token = $1
+        RETURNING id, username, email`,
+        [token]
+    );
+
+    // If no rows came back, the token was fake, typed wrong, or already used.
+    if (result.rows.length === 0) {
+        throw new Error('Invalid or expired verification token');
+    }
+
+    // Return the successfully verified user data
+    return result.rows[0];
 };
 
 export const generateAccessToken = (userId: number) => {
@@ -110,7 +131,7 @@ export const saveRefreshToken = async (
 
 export const validateLogin = async (email: string, password: string) => {
     const result = await pool.query(
-        'SELECT id, username, email, password_hash FROM account WHERE email = $1',
+        'SELECT id, username, email, password_hash, is_verified FROM account WHERE email = $1',
         [email]
     );
 
@@ -125,7 +146,12 @@ export const validateLogin = async (email: string, password: string) => {
         throw new Error('Invalid email or password');
     }
 
-    return { id: user.id, username: user.username, email: user.email };
+    return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        is_verified: user.is_verified,
+    };
 };
 
 export const refreshSession = async (refreshToken: string) => {

@@ -7,6 +7,7 @@ import { authenticateToken } from './auth.middleware.js';
 import {
     register,
     checkEmail,
+    verifyEmail,
     login,
     refresh,
     logout,
@@ -18,6 +19,8 @@ const router = Router();
 router.post('/auth/register', register);
 
 router.get('/auth/check-email', checkEmail);
+
+router.post('/auth/verify', verifyEmail);
 
 router.post('/auth/login', login);
 

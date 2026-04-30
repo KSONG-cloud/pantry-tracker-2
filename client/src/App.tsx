@@ -8,6 +8,8 @@ import { Login } from './components/login/login';
 import { TrackPantry } from './components/track_pantry/track_pantry';
 import { Loading } from './components/loading/loading';
 import { Register } from './components/register/register';
+import { VerifyScreen } from './components/validation/verify_screen';
+import { CheckEmailScreen } from './components/validation/check_email_screen';
 
 // Routes
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router';
@@ -69,6 +71,8 @@ function App() {
                     path="/register"
                     element={<Register setUser={setUser} />}
                 />
+                <Route path="/verify" element={<VerifyScreen />} />
+                <Route path="/check-email" element={<CheckEmailScreen />} />
                 <Route
                     path="/"
                     element={

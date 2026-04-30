@@ -36,6 +36,14 @@ export const authApi = {
             `${BASE_URL}/auth/check-email?email=${encodeURIComponent(email)}`
         ),
 
+    verify: (token: string) =>
+        fetch(`${BASE_URL}/auth/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+            credentials: 'include',
+        }),
+
     login: (email: string, password: string) =>
         fetch(`${BASE_URL}/auth/login`, {
             method: 'POST',

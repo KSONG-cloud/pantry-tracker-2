@@ -27,7 +27,7 @@ export const Register = ({ setUser }: RegisterProps) => {
 
         if (res.ok) {
             setUser(data.user);
-            navigate('/pantry');
+            navigate('/check-email', { state: { email } });
         } else {
             console.error('Login failed:', data);
             alert('Login failed: ' + data.message);
@@ -69,7 +69,6 @@ export const Register = ({ setUser }: RegisterProps) => {
             const data = await res.json();
 
             if (data.emailExists) {
-                console.log("hello");
                 setEmailError(true);
                 setEmailErrorMessage(
                     'This email is already registered. Please log in.'

@@ -7,6 +7,7 @@ import { AddItemModal } from './add_item_modal';
 import { FoodGroup } from './group_of_food';
 import { FoodItemModal } from './food_item_modal';
 import { FoodUnit } from './one_unit_of_food';
+import { Loading } from '../loading/loading';
 
 // CSS Styles
 import '@/styles/track_pantry/track_pantry.css';
@@ -543,7 +544,7 @@ function TrackPantry({ userId }: TrackPantryProps) {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading />;
     }
 
     return (
